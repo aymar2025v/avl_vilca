@@ -1,0 +1,8 @@
+{
+  "type": "module",
+  "scripts": {
+    "test": "node js/test.js",
+    "compare": "node tools/compare_cpp.mjs",
+    "vendor": "node tools/fetch-vue.mjs"
+  }
+}

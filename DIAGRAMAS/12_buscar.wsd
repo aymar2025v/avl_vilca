@@ -1,0 +1,35 @@
+@startuml 12_buscar
+skinparam shadowing false
+skinparam ArrowColor #1F4E79
+skinparam ActivityBorderColor #1F4E79
+skinparam ActivityBackgroundColor #EAF2FB
+skinparam ActivityDiamondBorderColor #BF9000
+skinparam ActivityDiamondBackgroundColor #FFF2CC
+skinparam NoteBackgroundColor #FFFBE6
+skinparam NoteBorderColor #BF9000
+skinparam ClassBackgroundColor #EAF2FB
+skinparam ClassBorderColor #1F4E79
+title buscar(raiz, clave) - búsqueda binaria recursiva
+
+start
+:Entrada: raiz (const unique_ptr&), clave (const K&);
+if (raiz es nullptr ?) then (sí)
+  #D5F0D5:return nullptr;
+  note right: llegamos a un hueco: la clave no existe
+  stop
+endif
+if (clave == raiz->clave ?) then (sí)
+  #D5F0D5:return raiz.get();
+  note right: puntero CRUDO (no dueño) al nodo encontrado
+  stop
+endif
+if (clave < raiz->clave ?) then (sí)
+  #FFF0B3:return buscar(raiz->izq, clave);
+  note right: la clave es menor -> subárbol izquierdo
+else (no)
+  #FFF0B3:return buscar(raiz->der, clave);
+  note right: la clave es mayor -> subárbol derecho
+endif
+note right: Costo O(log n) porque el AVL tiene altura <= 1.44 log2(n)
+stop
+@enduml

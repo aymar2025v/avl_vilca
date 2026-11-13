@@ -1,0 +1,45 @@
+@startuml 09_balancear
+skinparam shadowing false
+skinparam ArrowColor #1F4E79
+skinparam ActivityBorderColor #1F4E79
+skinparam ActivityBackgroundColor #EAF2FB
+skinparam ActivityDiamondBorderColor #BF9000
+skinparam ActivityDiamondBackgroundColor #FFF2CC
+skinparam NoteBackgroundColor #FFFBE6
+skinparam NoteBorderColor #BF9000
+skinparam ClassBackgroundColor #EAF2FB
+skinparam ClassBorderColor #1F4E79
+title balancear(n) - 4 casos: LL, RR, LR, RL
+
+start
+:Entrada: n (unique_ptr<NodoBST>&) no nulo;
+:actualizar_altura(n);
+note right: 1) deja correcta la altura del nodo actual
+:fb = factor_balance(n);
+note right: 2) calcula el factor de balance
+if (fb > 1 ?) then (sí: pesado a la DERECHA)
+  if (factor_balance de n->der < 0 ?) then (sí: caso RL)
+    #FADBD8:rotar_derecha(n->der);
+    note right: RL, paso 1: se endereza el hijo derecho
+  else (no: caso RR)
+  endif
+  #FADBD8:rotar_izquierda(n);
+  note right: caso RR, o paso 2 del caso RL
+elseif (fb < -1 ?) then (sí: pesado a la IZQUIERDA)
+  if (factor_balance de n->izq > 0 ?) then (sí: caso LR)
+    #FADBD8:rotar_izquierda(n->izq);
+    note right: LR, paso 1: se endereza el hijo izquierdo
+  else (no: caso LL)
+  endif
+  #FADBD8:rotar_derecha(n);
+  note right: caso LL, o paso 2 del caso LR
+else (fb en {-1, 0, 1})
+  :Nodo equilibrado\nno se hace nada;
+endif
+note right
+  En la versión del código basta "< 0" y "> 0":
+  si el hijo tiene fb = 0 (solo ocurre al ELIMINAR)
+  se trata como caso simple (RR / LL), que es lo correcto.
+end note
+stop
+@enduml

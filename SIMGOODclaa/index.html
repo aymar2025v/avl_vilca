@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simulador AVL — fotogramas</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="app">
+  <h1>Simulador AVL <small>insertar · eliminar · buscar · mínimo · rotaciones · balancear</small></h1>
+
+  <div class="controls">
+    <div class="row">
+      <input type="number" id="keyInput" class="inp" placeholder="clave" value="10">
+      <button class="btn b-main" onclick="op('insertar')">Insertar</button>
+      <button class="btn" onclick="op('eliminar')">Eliminar</button>
+      <button class="btn" onclick="op('buscar')">Buscar</button>
+      <button class="btn" onclick="op('minimo')">Mínimo</button>
+      <span class="sep"></span>
+      <button class="btn" onclick="op('rotar_derecha')" title="Rotar a la derecha el nodo con esa clave">↻ rotar_derecha</button>
+      <button class="btn" onclick="op('rotar_izquierda')" title="Rotar a la izquierda el nodo con esa clave">↺ rotar_izquierda</button>
+      <button class="btn" onclick="op('balancear')">balancear</button>
+    </div>
+    <div class="row">
+      <input type="text" id="multiInput" class="inp wide" placeholder="varias claves: 50, 30, 70, 20">
+      <button class="btn" onclick="quickInsert()">Insertar rápido</button>
+      <button class="btn" onclick="randomTree()">Aleatorio</button>
+      <button class="btn" onclick="loadExample()">Ejemplo LL</button>
+      <button class="btn" onclick="clearTree()">Limpiar</button>
+      <span id="msg"></span>
+    </div>
+  </div>
+
+  <div class="toolbar">
+    <button class="btn" id="prevBtn" onclick="prev()">← Anterior</button>
+    <button class="btn" id="nextBtn" onclick="next()">Siguiente →</button>
+    <button class="btn btn-play" onclick="togglePlay()"><span class="play-icon" id="playIcon">▶</span> <span id="playLabel">Reproducir</span></button>
+    <input type="range" class="progress" id="progress" min="0" max="0" value="0" oninput="jumpTo(+this.value)">
+    <label class="spd">Velocidad <input type="range" id="speed" min="300" max="2500" step="100" value="1300" style="direction:rtl"></label>
+    <span class="frame-counter">Fotograma <span id="frameNum">1</span> ⋯ <span id="frameTotal">1</span></span>
+  </div>
+
+  <div class="frame-list" id="frameList"></div>
+  <div class="stack-bar" id="stackBar"></div>
+  <div class="code-panel" id="codePanel"></div>
+  <div class="vars-bar" id="varsBar"></div>
+  <div class="tree-panel" id="treePanel"></div>
+  <div id="notePanel"></div>
+</div>
+<script src="app.js"></script>
+</body>
+</html>

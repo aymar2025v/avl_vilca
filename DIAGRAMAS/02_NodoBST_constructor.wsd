@@ -1,0 +1,30 @@
+@startuml 02_NodoBST_constructor
+skinparam shadowing false
+skinparam ArrowColor #1F4E79
+skinparam ActivityBorderColor #1F4E79
+skinparam ActivityBackgroundColor #EAF2FB
+skinparam ActivityDiamondBorderColor #BF9000
+skinparam ActivityDiamondBackgroundColor #FFF2CC
+skinparam NoteBackgroundColor #FFFBE6
+skinparam NoteBorderColor #BF9000
+skinparam ClassBackgroundColor #EAF2FB
+skinparam ClassBorderColor #1F4E79
+title NodoBST(K k, V v = V{}) - constructor
+
+start
+:Entrada: k (clave) y v (valor)\nSi no se pasa v se usa V{} (valor por defecto);
+note right
+  explicit: evita conversiones implícitas
+  (no se puede escribir NodoBST<int> n = 5).
+end note
+:clave = std::move(k);
+note right: se MUEVE en vez de copiar (más eficiente con tipos como string)
+:valor = std::move(v);
+:izq = nullptr;
+:der = nullptr;
+note right: unique_ptr vacíos: el nodo nace sin hijos
+:altura = 1;
+note right: un nodo nuevo es una hoja -> altura 1
+:Nodo listo para enlazarse en el árbol;
+stop
+@enduml

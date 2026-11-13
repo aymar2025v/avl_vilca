@@ -1,0 +1,55 @@
+@startuml 13_experimento
+skinparam shadowing false
+skinparam ActivityBackgroundColor #F4F7FB
+skinparam ActivityBorderColor #1F3A5F
+skinparam ArrowColor #1F3A5F
+skinparam NoteBackgroundColor #FFF8E1
+skinparam NoteBorderColor #C8553D
+skinparam ActivityDiamondBackgroundColor #FFF3E0
+skinparam ActivityDiamondBorderColor #1F3A5F
+skinparam PartitionBorderColor #1F3A5F
+skinparam ActivityStartColor #1F3A5F
+skinparam ActivityEndColor #1F3A5F
+
+title experimento(n, orden='random') - compara BST y AVL (avl_python.py lineas 136 a 156)
+
+start
+:Entrada: n (cantidad de claves) y orden ('random' o 'ordered');
+#C8E6C9:Linea 138: claves = list(range(1, n + 1))\nse crea la lista con las claves 1 a n;
+if (Linea 139: orden == 'random' ?) then (si)
+  :Linea 140: random.shuffle(claves)\nbaraja la lista en el mismo lugar;
+else (no, ordenado)
+  :Las claves quedan en orden ascendente;
+endif
+:Linea 143: sys.setrecursionlimit(n + 100)\nsube el limite de recursion de Python\nel BST ordenado llega a profundidad n;
+partition "Arbol BST simple" {
+  #C8E6C9:Linea 144: raiz_bst = None\nse crea la variable raiz_bst;
+  while (Linea 145: hay mas claves en la lista ?) is (si)
+    :Linea 146: raiz_bst = insertar_bst(raiz_bst, c)\nver diagrama 11_insertar_bst;
+    #C8E6C9:Se crea un Nodo por cada clave\ndentro de insertar_bst;
+  endwhile (no)
+  #C8E6C9:Linea 147: h_bst = altura_arbol(raiz_bst)\nver diagrama 12_altura_arbol;
+}
+partition "Arbol AVL" {
+  #C8E6C9:Linea 150: raiz_avl = None\nse crea la variable raiz_avl;
+  while (Linea 151: hay mas claves en la lista ?) is (si)
+    :Linea 152: raiz_avl = insertar_avl(raiz_avl, c)\nver diagrama 08_insertar_avl;
+    #C8E6C9:Se crea un Nodo por cada clave\ny se rota cuando hace falta;
+  endwhile (no)
+  #C8E6C9:Linea 153: h_avl = raiz_avl.altura si raiz_avl no es None\nsi no 0\nla altura del AVL ya esta guardada en la raiz;
+}
+#C8E6C9:Linea 155: limite_teorico = int(1.44 * math.log2(n + 1))\nlimite teorico de la guia;
+:Linea 156: return h_bst, h_avl, limite_teorico\ndevuelve una tupla con los tres valores;
+#FFCDD2:Al terminar, claves, raiz_bst y raiz_avl quedan sin referencias\nPython libera los dos arboles completos;
+note right
+  Con claves ordenadas: BST de altura n, AVL de altura minima.
+  Con claves aleatorias: ambos mejoran pero el AVL sigue ganando.
+end note
+stop
+
+legend bottom right
+  Verde: se crea un objeto o una variable
+  Rojo: se destruye un objeto o una variable
+  Nota amarilla: estado de la memoria o explicacion
+endlegend
+@enduml

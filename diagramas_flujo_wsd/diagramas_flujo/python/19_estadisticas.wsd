@@ -1,0 +1,44 @@
+@startuml 19_estadisticas
+skinparam shadowing false
+skinparam ActivityBackgroundColor #F4F7FB
+skinparam ActivityBorderColor #1F3A5F
+skinparam ArrowColor #1F3A5F
+skinparam NoteBackgroundColor #FFF8E1
+skinparam NoteBorderColor #C8553D
+skinparam ActivityDiamondBackgroundColor #FFF3E0
+skinparam ActivityDiamondBorderColor #1F3A5F
+skinparam PartitionBorderColor #1F3A5F
+skinparam ActivityStartColor #1F3A5F
+skinparam ActivityEndColor #1F3A5F
+
+title SIGA_AVL.estadisticas() - estadisticas del arbol (avl_python.py lineas 221 a 227)
+
+start
+:Entrada: self;
+#C8E6C9:Linea 222: h = self.raiz.altura si self.raiz no es None\nsi no 0\nse crea h con la altura actual del AVL;
+if (Linea 223: self.total mayor que 0 ?) then (si)
+  #C8E6C9:Linea 223: teo = int(1.44 * math.log2(self.total + 1))\nse crea teo con la altura teorica maxima;
+else (no, no hay estudiantes)
+  #C8E6C9:Linea 223: teo = 0;
+endif
+:Linea 224: print Total estudiantes con self.total;
+:Linea 225: print Altura AVL actual con h;
+:Linea 226: print Altura teorica max con teo;
+if (Linea 227: h menor o igual que teo ?) then (si)
+  :print Eficiencia: OPTIMO;
+else (no)
+  :print Eficiencia: SUBOPTIMO;
+endif
+note right
+  Ejemplo con 11 estudiantes:
+  teo = int(1.44 * log2(12)) = 5 y h = 4, entonces OPTIMO.
+end note
+#FFCDD2:Al terminar, las variables h y teo desaparecen;
+stop
+
+legend bottom right
+  Verde: se crea un objeto o una variable
+  Rojo: se destruye un objeto o una variable
+  Nota amarilla: estado de la memoria o explicacion
+endlegend
+@enduml

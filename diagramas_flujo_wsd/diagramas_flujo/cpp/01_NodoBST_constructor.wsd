@@ -1,0 +1,59 @@
+@startuml 01_NodoBST_constructor
+skinparam shadowing false
+skinparam ActivityBackgroundColor #F4F7FB
+skinparam ActivityBorderColor #1F3A5F
+skinparam ArrowColor #1F3A5F
+skinparam NoteBackgroundColor #FFF8E1
+skinparam NoteBorderColor #C8553D
+skinparam ActivityDiamondBackgroundColor #FFF3E0
+skinparam ActivityDiamondBorderColor #1F3A5F
+skinparam PartitionBorderColor #1F3A5F
+skinparam ActivityStartColor #1F3A5F
+skinparam ActivityEndColor #1F3A5F
+
+title Creacion de un objeto NodoBST (avl.h lineas 17 a 27, constructor lineas 24 a 26)
+
+start
+:insertar_avl encuentra un hueco con raiz == nullptr\navl.h linea 133;
+note right
+  Hace falta un nodo nuevo para la clave.
+  clave y valor ya son copias locales
+  porque insertar_avl los recibe por valor.
+end note
+#C8E6C9:std::make_unique de NodoBST con argumentos\nstd::move(clave) y std::move(valor)\navl.h linea 134;
+note right
+  make_unique reserva memoria dinamica en el heap
+  y construye el objeto dentro de esa memoria.
+  Devuelve un unique_ptr: el unico dueno del nodo.
+end note
+#C8E6C9:Reserva de memoria en el heap\npara un objeto NodoBST;
+partition "Constructor explicit NodoBST(K k, V v) lineas 24 a 26" {
+  :Recibe k y v por valor\nllegan ya movidos desde make_unique;
+  #C8E6C9:clave(std::move(k))\nmueve la clave al miembro clave sin copiar;
+  #C8E6C9:valor(std::move(v))\nmueve el valor al miembro valor;
+  #C8E6C9:izq(nullptr)\nunique_ptr vacio: no hay hijo izquierdo;
+  #C8E6C9:der(nullptr)\nunique_ptr vacio: no hay hijo derecho;
+  #C8E6C9:altura(1)\nnodo recien creado = hoja = altura 1;
+  note right
+    La lista de inicializacion sigue el orden de declaracion
+    de los miembros: clave, valor, izq, der, altura.
+  end note
+  :Cuerpo del constructor vacio\nla lista de inicializacion ya hizo todo el trabajo;
+}
+:El constructor termina\nel objeto NodoBST esta completo;
+:make_unique devuelve el unique_ptr;
+#C8E6C9:raiz = unique_ptr recibido\nasignacion por movimiento\nraiz pasa a ser dueno del nodo;
+note right
+  raiz es una referencia al enlace del padre
+  o a la variable raiz del arbol.
+  Asi el nodo queda conectado donde corresponde.
+end note
+:return\nuna hoja nunca esta desbalanceada\npor eso aqui no se llama a balancear;
+stop
+
+legend bottom right
+  Verde: se crea un objeto o una variable
+  Rojo: se destruye un objeto o una variable
+  Nota amarilla: estado de la memoria o explicacion
+endlegend
+@enduml

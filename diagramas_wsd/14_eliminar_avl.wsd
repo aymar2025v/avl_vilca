@@ -1,0 +1,114 @@
+@startuml 14_eliminar_avl
+' ---------- Estilo técnico formal (esquinas rectas) ----------
+skinparam shadowing false
+skinparam roundCorner 0
+skinparam ActivityRoundCorner 0
+skinparam defaultFontName Arial
+skinparam ActivityFontName Consolas
+skinparam ActivityFontSize 12
+skinparam NoteFontSize 11
+skinparam ArrowColor #000000
+skinparam ArrowThickness 1
+skinparam ActivityBorderColor #000000
+skinparam ActivityBorderThickness 1.2
+skinparam ActivityBackgroundColor #F2F2F2
+skinparam ActivityDiamondBorderColor #000000
+skinparam ActivityDiamondBackgroundColor #FFFFFF
+skinparam ActivityStartColor #000000
+skinparam ActivityEndColor #000000
+skinparam NoteBackgroundColor #FFFFFF
+skinparam NoteBorderColor #595959
+skinparam NoteBorderThickness 1
+skinparam PartitionBorderColor #595959
+skinparam PartitionBackgroundColor #FFFFFF
+skinparam TitleFontSize 16
+skinparam TitleBorderThickness 1.5
+skinparam TitleBorderColor #000000
+skinparam TitleBorderRoundCorner 0
+skinparam LegendBackgroundColor #FFFFFF
+skinparam LegendBorderColor #000000
+skinparam LegendBorderThickness 1
+skinparam LegendBorderRoundCorner 0
+skinparam ClassBackgroundColor #FFFFFF
+skinparam ClassBorderColor #000000
+skinparam ClassAttributeIconSize 0
+skinparam PackageStyle rectangle
+skinparam PackageBorderColor #595959
+skinparam ComponentBackgroundColor #F2F2F2
+skinparam ComponentBorderColor #000000
+skinparam SequenceParticipantBackgroundColor #F2F2F2
+skinparam SequenceParticipantBorderColor #000000
+skinparam SequenceLifeLineBorderColor #595959
+skinparam SequenceGroupBackgroundColor #FFFFFF
+skinparam SequenceDividerBackgroundColor #D9D9D9
+skinparam FooterFontSize 9
+footer SIS210 - Algoritmos y Estructuras de Datos  ·  UNAP 2026-II  ·  Semana 10: Árbol AVL  ·  Fuente: avl.h, líneas 192-233
+title eliminar_avl(raiz, clave): eliminación con reequilibrio
+
+legend top
+  |= Campo |= Detalle |
+  | Entrada | raiz: unique_ptr<NodoBST>&,  clave: const K& |
+  | Precondición | raiz es un AVL válido (o vacío) |
+  | Postcondición | La clave ya no está en el árbol (si no existía, no cambia nada) y el árbol sigue siendo AVL |
+  | Complejidad | O(log n): puede haber rotaciones en VARIOS niveles |
+endlegend
+
+start
+:Entrada: raiz (referencia al unique_ptr), clave (const K&)<
+partition "Búsqueda del nodo" {
+  if ([1] raiz es nullptr ?) then (sí)
+    #E2EFDA:[2] return;
+    note right: Clave inexistente: no hay nada que hacer.
+    stop
+  endif
+  if ([3] clave < raiz->clave ?) then (sí)
+    #FFF2CC:[4] eliminar_avl(raiz->izq, clave);
+  elseif ([5] clave > raiz->clave ?) then (sí)
+    #FFF2CC:[6] eliminar_avl(raiz->der, clave);
+  else (clave encontrada)
+    partition "Eliminación del nodo (3 casos)" {
+      if ([7] no tiene hijos ?) then (sí: CASO 1, hoja)
+        :[8] raiz = nullptr;
+        note right: El unique_ptr libera el nodo automáticamente.
+      elseif ([9] no tiene hijo izquierdo ?) then (sí: CASO 2a)
+        :[10] auto hijo = std::move(raiz->der);
+        :[11] raiz = std::move(hijo);
+        note right
+          El hijo derecho ocupa el lugar del nodo.
+          Se pasa por la variable temporal "hijo" para no destruir
+          el nodo mientras se lee uno de sus miembros.
+        end note
+      elseif ([12] no tiene hijo derecho ?) then (sí: CASO 2b)
+        :[13] auto hijo = std::move(raiz->izq);
+        :[14] raiz = std::move(hijo);
+        note right: El hijo izquierdo ocupa el lugar del nodo.
+      else (CASO 3: dos hijos)
+        #DDEBF7:[15] suc = minimo(raiz->der);
+        note right: Sucesor inorden = menor clave del subárbol derecho.
+        :[16] K clave_suc = suc->clave;
+        note right
+          COPIA de la clave antes de borrar el nodo: si se usara
+          suc->clave directamente quedaría una referencia colgante
+          al destruirse el nodo.
+        end note
+        :[17] raiz->clave = clave_suc;
+        :[18] raiz->valor = suc->valor;
+        #FFF2CC:[19] eliminar_avl(raiz->der, clave_suc);
+        note right: Se elimina el sucesor, que tiene a lo sumo 1 hijo.
+      endif
+    }
+  endif
+}
+partition "Reequilibrio al regresar" {
+  if ([20] raiz sigue existiendo ?) then (sí)
+    #FCE4D6:[21] balancear(raiz);
+    note right
+      A diferencia de insertar, aquí puede hacer falta rotar
+      en VARIOS niveles hacia arriba.
+    end note
+  else (no)
+    :[22] No hay nada que balancear;
+  endif
+}
+stop
+@enduml

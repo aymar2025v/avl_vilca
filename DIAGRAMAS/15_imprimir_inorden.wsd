@@ -1,0 +1,29 @@
+@startuml 15_imprimir_inorden
+skinparam shadowing false
+skinparam ArrowColor #1F4E79
+skinparam ActivityBorderColor #1F4E79
+skinparam ActivityBackgroundColor #EAF2FB
+skinparam ActivityDiamondBorderColor #BF9000
+skinparam ActivityDiamondBackgroundColor #FFF2CC
+skinparam NoteBackgroundColor #FFFBE6
+skinparam NoteBorderColor #BF9000
+skinparam ClassBackgroundColor #EAF2FB
+skinparam ClassBorderColor #1F4E79
+title imprimir_inorden(n) - recorrido izquierda, raíz, derecha
+
+start
+:Entrada: n (const unique_ptr&);
+if (n es nullptr ?) then (sí)
+  #D5F0D5:return;
+  note right: caso base de la recursión
+  stop
+endif
+#FFF0B3:imprimir_inorden(n->izq);
+:std::cout << n->clave << " ";
+#FFF0B3:imprimir_inorden(n->der);
+note right
+  Imprime las claves en orden ASCENDENTE.
+  Ejemplo con 10 - 20 - 30: "10 20 30 "
+end note
+stop
+@enduml

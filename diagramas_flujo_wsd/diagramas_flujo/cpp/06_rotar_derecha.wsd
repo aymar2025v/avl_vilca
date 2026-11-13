@@ -1,0 +1,84 @@
+@startuml 06_rotar_derecha
+skinparam shadowing false
+skinparam ActivityBackgroundColor #F4F7FB
+skinparam ActivityBorderColor #1F3A5F
+skinparam ArrowColor #1F3A5F
+skinparam NoteBackgroundColor #FFF8E1
+skinparam NoteBorderColor #C8553D
+skinparam ActivityDiamondBackgroundColor #FFF3E0
+skinparam ActivityDiamondBorderColor #1F3A5F
+skinparam PartitionBorderColor #1F3A5F
+skinparam ActivityStartColor #1F3A5F
+skinparam ActivityEndColor #1F3A5F
+
+title rotar_derecha(z) - rotacion simple a la derecha, caso LL (avl.h lineas 65 a 74)
+
+start
+:Entrada: z\nreferencia al unique_ptr que apunta al nodo desbalanceado\n(el enlace del padre o la raiz del arbol);
+note right
+  Precondicion: z != nullptr y z->izq != nullptr.
+  balancear solo llama aqui cuando fb de z es menor que -1,
+  y eso garantiza que z->izq existe.
+  Ejemplo para seguir el flujo:
+  z = 30, y = 20, x = 10, T3 = 25, T4 = 35
+  (20 es hijo izquierdo de 30, 10 hijo izquierdo de 20,
+  25 hijo derecho de 20 y 35 hijo derecho de 30)
+end note
+partition "Linea 67: auto y = std::move(z->izq)" {
+  #C8E6C9:Se crea la variable local y\nunique_ptr que vive solo dentro de la funcion;
+  :y toma el nodo 20 con todo su subarbol\nz->izq queda en nullptr;
+  note right
+    Nadie mas apunta al nodo 20.
+    No se copia ningun nodo: solo cambia de dueno.
+  end note
+}
+partition "Linea 68: z->izq = std::move(y->der)" {
+  :El subarbol T3 (nodo 25) pasa de y->der a z->izq;
+  :y->der queda en nullptr;
+  note right
+    Ahora 30 tiene hijos 25 (izq) y 35 (der).
+    El nodo 20 solo conserva a 10 como hijo izquierdo.
+    El orden inorden se mantiene porque 20 < 25 < 30.
+  end note
+}
+partition "Linea 69: actualizar_altura(z)" {
+  :Se recalcula la altura del nodo 30\n(z todavia apunta al 30)\nver diagrama 05_actualizar_altura;
+  note right
+    Primero se actualiza el nodo que BAJA:
+    la altura de 30 pasa de 4 a 1 + max(1, 1) = 2.
+    Despues se podra actualizar el que sube,
+    usando una altura de hijo ya correcta.
+  end note
+}
+partition "Linea 70: y->der = std::move(z)" {
+  :El nodo 30 con sus hijos pasa a ser hijo derecho de 20;
+  :z (la referencia) queda en nullptr\nel enlace que apuntaba a 30 esta vacio un instante;
+}
+partition "Linea 71: z = std::move(y)" {
+  :El enlace z recibe el nodo 20\n20 ocupa el lugar que tenia 30 en el arbol;
+  :y queda en nullptr\nyo no es dueno de nada;
+}
+partition "Linea 72: actualizar_altura(z)" {
+  :Ahora z apunta al 20\nse recalcula su altura\nhijo izquierdo 10 con altura 2 y hijo derecho 30 con altura 2;
+  note right
+    La altura de 20 pasa de 3 a 1 + max(2, 2) = 3
+    y su factor de balance queda en 0.
+  end note
+}
+partition "Linea 73: ++contador_rotaciones" {
+  :Se incrementa el contador global de rotaciones\nsirve para responder las preguntas P1-A y P1-B;
+}
+#FFCDD2:Al salir de la funcion se destruye la variable local y\nesta vacia: su destructor no libera ningun nodo;
+note right
+  Resumen: ningun nodo se creo ni se destruyo.
+  Solo cambiaron 3 enlaces (z->izq, y->der y el enlace z)
+  y se recalcularon 2 alturas.
+end note
+stop
+
+legend bottom right
+  Verde: se crea un objeto o una variable
+  Rojo: se destruye un objeto o una variable
+  Nota amarilla: estado de la memoria o explicacion
+endlegend
+@enduml

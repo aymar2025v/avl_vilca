@@ -1,0 +1,45 @@
+@startuml 29_test_P9_estres_aleatorio
+skinparam shadowing false
+skinparam ArrowColor #1F4E79
+skinparam ActivityBorderColor #1F4E79
+skinparam ActivityBackgroundColor #EAF2FB
+skinparam ActivityDiamondBorderColor #BF9000
+skinparam ActivityDiamondBackgroundColor #FFF2CC
+skinparam NoteBackgroundColor #FFFBE6
+skinparam NoteBorderColor #BF9000
+skinparam ClassBackgroundColor #EAF2FB
+skinparam ClassBorderColor #1F4E79
+title test_P9_estres_aleatorio() - 2000 inserciones y 1000 eliminaciones
+
+start
+:std::mt19937 gen(12345);
+note right: semilla fija -> la prueba es reproducible
+:vector<int> claves(2000) con valores 1..2000;
+:std::shuffle(claves, gen);
+note right: orden aleatorio de las claves
+:r = nullptr;
+partition "Fase 1: insertar" {
+  :para cada c en claves;
+  :insertar_avl(r, c, c);
+  :fin del bucle;
+  :assert(arbol_valido(r));
+}
+:std::shuffle(claves, gen);
+note right: nuevo orden aleatorio para elegir qué eliminar
+partition "Fase 2: eliminar 1000 claves" {
+  :i = 0;
+  while (i < 1000 ?) is (sí)
+    :eliminar_avl(r, claves[i]);
+    :assert(arbol_valido(r));
+    note right: tras CADA eliminación el árbol sigue siendo AVL y BST
+    :assert(buscar(r, claves[i]) es nullptr);
+    :++i;
+  endwhile (no)
+}
+:std::cout << "[P9 OK] ... h final = " << h(r);
+note right
+  La altura final depende del azar (semilla 12345)
+  pero siempre debe ser logarítmica.
+end note
+stop
+@enduml

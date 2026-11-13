@@ -1,0 +1,36 @@
+@startuml 01_NodoBST_estructura
+skinparam shadowing false
+skinparam ArrowColor #1F4E79
+skinparam ActivityBorderColor #1F4E79
+skinparam ActivityBackgroundColor #EAF2FB
+skinparam ActivityDiamondBorderColor #BF9000
+skinparam ActivityDiamondBackgroundColor #FFF2CC
+skinparam NoteBackgroundColor #FFFBE6
+skinparam NoteBorderColor #BF9000
+skinparam ClassBackgroundColor #EAF2FB
+skinparam ClassBorderColor #1F4E79
+title Estructura NodoBST<K, V> (avl.h)
+
+class NodoBST<K, V> {
+  + K clave
+  + V valor
+  + unique_ptr<NodoBST> izq
+  + unique_ptr<NodoBST> der
+  + int altura
+  --
+  + NodoBST(K k, V v = V{})
+}
+
+NodoBST "1" *-- "0..1" NodoBST : izq
+NodoBST "1" *-- "0..1" NodoBST : der
+
+note right of NodoBST
+  clave: criterio de ordenamiento del BST.
+  valor: dato asociado a la clave.
+  izq / der: unique_ptr -> el nodo es DUEÑO de sus hijos
+  (si se destruye el nodo, se destruyen sus hijos).
+  altura: altura del subárbol con raíz en este nodo.
+  Hoja = 1, árbol vacío (nullptr) = 0.
+  Es el único campo nuevo respecto al BST de la Semana 9.
+end note
+@enduml

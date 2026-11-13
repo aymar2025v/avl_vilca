@@ -1,0 +1,44 @@
+@startuml 14_imprimir_arbol
+skinparam shadowing false
+skinparam ActivityBackgroundColor #F4F7FB
+skinparam ActivityBorderColor #1F3A5F
+skinparam ArrowColor #1F3A5F
+skinparam NoteBackgroundColor #FFF8E1
+skinparam NoteBorderColor #C8553D
+skinparam ActivityDiamondBackgroundColor #FFF3E0
+skinparam ActivityDiamondBorderColor #1F3A5F
+skinparam PartitionBorderColor #1F3A5F
+skinparam ActivityStartColor #1F3A5F
+skinparam ActivityEndColor #1F3A5F
+
+title imprimir_arbol(n, nivel) - dibuja el arbol de lado (avl.h lineas 220 a 228)
+
+start
+:Entrada: n (referencia constante) y nivel (por defecto 0);
+note right
+  La raiz sale a la izquierda, el hijo derecho arriba
+  y el hijo izquierdo abajo.
+  Cada nodo muestra clave, altura y factor de balance.
+end note
+if (Linea 222: n == nullptr ?) then (si)
+  :return\nenlace vacio, nada que dibujar;
+  stop
+else (no)
+endif
+:Linea 223: imprimir_arbol(n->der, nivel + 1)\nprimero el subarbol derecho, un nivel mas a la derecha\nLLAMADA RECURSIVA;
+#C8E6C9:Linea 224: std::string(nivel * 6, espacio)\nse crea un objeto std::string temporal\ncon 6 espacios por cada nivel de profundidad;
+:Lineas 224 a 226: std::cout escribe\nla sangria, la clave, h = altura y fb = factor_balance(n)\nver diagrama 04_factor_balance;
+#FFCDD2:El string temporal se destruye\nal terminar la sentencia que lo uso;
+:Linea 227: imprimir_arbol(n->izq, nivel + 1)\nal final el subarbol izquierdo\nLLAMADA RECURSIVA;
+note right
+  Orden: derecha, raiz, izquierda.
+  Si se gira la salida 90 grados queda el arbol normal.
+end note
+stop
+
+legend bottom right
+  Verde: se crea un objeto o una variable
+  Rojo: se destruye un objeto o una variable
+  Nota amarilla: estado de la memoria o explicacion
+endlegend
+@enduml

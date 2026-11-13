@@ -1,0 +1,75 @@
+@startuml 03_contador_rotaciones
+' ---------- Estilo técnico formal (esquinas rectas) ----------
+skinparam shadowing false
+skinparam roundCorner 0
+skinparam ActivityRoundCorner 0
+skinparam defaultFontName Arial
+skinparam ActivityFontName Consolas
+skinparam ActivityFontSize 12
+skinparam NoteFontSize 11
+skinparam ArrowColor #000000
+skinparam ArrowThickness 1
+skinparam ActivityBorderColor #000000
+skinparam ActivityBorderThickness 1.2
+skinparam ActivityBackgroundColor #F2F2F2
+skinparam ActivityDiamondBorderColor #000000
+skinparam ActivityDiamondBackgroundColor #FFFFFF
+skinparam ActivityStartColor #000000
+skinparam ActivityEndColor #000000
+skinparam NoteBackgroundColor #FFFFFF
+skinparam NoteBorderColor #595959
+skinparam NoteBorderThickness 1
+skinparam PartitionBorderColor #595959
+skinparam PartitionBackgroundColor #FFFFFF
+skinparam TitleFontSize 16
+skinparam TitleBorderThickness 1.5
+skinparam TitleBorderColor #000000
+skinparam TitleBorderRoundCorner 0
+skinparam LegendBackgroundColor #FFFFFF
+skinparam LegendBorderColor #000000
+skinparam LegendBorderThickness 1
+skinparam LegendBorderRoundCorner 0
+skinparam ClassBackgroundColor #FFFFFF
+skinparam ClassBorderColor #000000
+skinparam ClassAttributeIconSize 0
+skinparam PackageStyle rectangle
+skinparam PackageBorderColor #595959
+skinparam ComponentBackgroundColor #F2F2F2
+skinparam ComponentBorderColor #000000
+skinparam SequenceParticipantBackgroundColor #F2F2F2
+skinparam SequenceParticipantBorderColor #000000
+skinparam SequenceLifeLineBorderColor #595959
+skinparam SequenceGroupBackgroundColor #FFFFFF
+skinparam SequenceDividerBackgroundColor #D9D9D9
+skinparam FooterFontSize 9
+footer SIS210 - Algoritmos y Estructuras de Datos  ·  UNAP 2026-II  ·  Semana 10: Árbol AVL  ·  Fuente: avl.h, línea 34
+title contador_rotaciones: variable global de conteo
+
+legend top
+  |= Campo |= Detalle |
+  | Declaración | inline int contador_rotaciones = 0 |
+  | Propósito | Contar rotaciones simples para responder P1-A y P1-B de la guía |
+  | Modifican | rotar_derecha y rotar_izquierda (++ en cada llamada) |
+  | Reinician | Los tests P1, P2, P7 y P8 (= 0 antes de insertar) |
+endlegend
+
+start
+:[1] inline int contador_rotaciones = 0;
+note right
+  "inline" (C++17) permite definir la variable en un header
+  incluido por varios .cpp sin error de definición múltiple.
+  Existe UNA sola copia en todo el programa.
+end note
+fork
+  #FCE4D6:[2a] rotar_derecha(z) -> ++contador_rotaciones;
+fork again
+  #FCE4D6:[2b] rotar_izquierda(z) -> ++contador_rotaciones;
+end fork
+:[3] Rotación simple = +1\nRotación doble (LR o RL) = +2;
+#E4DFEC:[4] assert(contador_rotaciones == N);
+note right
+  Caso RR o LL: N = 1
+  Caso LR o RL: N = 2
+end note
+stop
+@enduml

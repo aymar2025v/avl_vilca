@@ -1,0 +1,45 @@
+@startuml 10_inorden
+skinparam shadowing false
+skinparam ActivityBackgroundColor #F4F7FB
+skinparam ActivityBorderColor #1F3A5F
+skinparam ArrowColor #1F3A5F
+skinparam NoteBackgroundColor #FFF8E1
+skinparam NoteBorderColor #C8553D
+skinparam ActivityDiamondBackgroundColor #FFF3E0
+skinparam ActivityDiamondBorderColor #1F3A5F
+skinparam PartitionBorderColor #1F3A5F
+skinparam ActivityStartColor #1F3A5F
+skinparam ActivityEndColor #1F3A5F
+
+title inorden(raiz, resultado=None) - recorrido inorden (avl_python.py lineas 104 a 112)
+
+start
+:Entrada: raiz (un Nodo o None) y resultado (lista o None);
+if (Linea 106: resultado is None ?) then (si, es la primera llamada)
+  #C8E6C9:Linea 107: resultado = []\nse crea la lista vacia que acumulara los nodos;
+  note right
+    Se usa None como valor por defecto y no una lista [] porque
+    una lista por defecto se compartiria entre llamadas.
+  end note
+else (no, llamada recursiva)
+  :Se reutiliza la lista recibida;
+endif
+if (Linea 108: raiz is not None ?) then (si)
+  :Linea 109: inorden(raiz.izq, resultado)\nprimero todo el subarbol izquierdo\nLLAMADA RECURSIVA;
+  :Linea 110: resultado.append(raiz)\nse agrega el nodo actual a la lista\n(se guarda la referencia al nodo, no una copia);
+  :Linea 111: inorden(raiz.der, resultado)\nluego todo el subarbol derecho\nLLAMADA RECURSIVA;
+else (no)
+  :No hace nada\nenlace vacio;
+endif
+:Linea 112: return resultado\nlista de nodos ordenados por clave;
+note right
+  Costo O(n): cada nodo se visita una vez.
+end note
+stop
+
+legend bottom right
+  Verde: se crea un objeto o una variable
+  Rojo: se destruye un objeto o una variable
+  Nota amarilla: estado de la memoria o explicacion
+endlegend
+@enduml

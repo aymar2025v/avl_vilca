@@ -1,0 +1,43 @@
+@startuml 01_Nodo_init
+skinparam shadowing false
+skinparam ActivityBackgroundColor #F4F7FB
+skinparam ActivityBorderColor #1F3A5F
+skinparam ArrowColor #1F3A5F
+skinparam NoteBackgroundColor #FFF8E1
+skinparam NoteBorderColor #C8553D
+skinparam ActivityDiamondBackgroundColor #FFF3E0
+skinparam ActivityDiamondBorderColor #1F3A5F
+skinparam PartitionBorderColor #1F3A5F
+skinparam ActivityStartColor #1F3A5F
+skinparam ActivityEndColor #1F3A5F
+
+title Creacion de un objeto Nodo - Nodo(clave, valor) (avl_python.py lineas 23 a 28)
+
+start
+:insertar_avl encuentra un hueco con raiz is None\nlinea 83 y linea 84\n(insertar_bst hace lo mismo en la linea 121);
+#C8E6C9:Se evalua Nodo(clave, valor)\nPython crea un objeto vacio de la clase Nodo\nen memoria dinamica;
+partition "Metodo ~_~_init~_~_(self, clave, valor=None) lineas 24 a 28" {
+  :self es la referencia al objeto recien creado\nclave y valor son los argumentos recibidos;
+  note right
+    Si se llama Nodo(clave) sin valor,
+    valor toma el valor por defecto None.
+  end note
+  #C8E6C9:Linea 25: self.clave = clave\nse crea el atributo clave;
+  #C8E6C9:Linea 26: self.valor = valor\nse crea el atributo valor;
+  #C8E6C9:Linea 27: self.izq = self.der = None\nse crean los atributos izq y der\nsin hijos;
+  #C8E6C9:Linea 28: self.altura = 1\nun nodo nuevo es una hoja: altura 1;
+}
+:~_~_init~_~_ termina sin devolver nada\nla llamada Nodo(...) entrega el objeto creado;
+:return Nodo(clave, valor)\nel llamador recibe la REFERENCIA al nodo nuevo\ny la guarda en raiz.izq, raiz.der o en la raiz;
+note right
+  Python no tiene unique_ptr: las variables son referencias.
+  El nodo vive mientras alguna referencia lo mantenga.
+end note
+stop
+
+legend bottom right
+  Verde: se crea un objeto o una variable
+  Rojo: se destruye un objeto o una variable
+  Nota amarilla: estado de la memoria o explicacion
+endlegend
+@enduml

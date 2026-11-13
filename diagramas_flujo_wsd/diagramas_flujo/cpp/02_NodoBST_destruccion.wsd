@@ -1,0 +1,46 @@
+@startuml 02_NodoBST_destruccion
+skinparam shadowing false
+skinparam ActivityBackgroundColor #F4F7FB
+skinparam ActivityBorderColor #1F3A5F
+skinparam ArrowColor #1F3A5F
+skinparam NoteBackgroundColor #FFF8E1
+skinparam NoteBorderColor #C8553D
+skinparam ActivityDiamondBackgroundColor #FFF3E0
+skinparam ActivityDiamondBorderColor #1F3A5F
+skinparam PartitionBorderColor #1F3A5F
+skinparam ActivityStartColor #1F3A5F
+skinparam ActivityEndColor #1F3A5F
+
+title Destruccion de un NodoBST (destructor implicito generado por el compilador)
+
+start
+:Un unique_ptr deja de ser dueno del nodo\nPuede pasar por tres causas;
+note right
+  1. raiz = nullptr (eliminar_avl, caso hoja, linea 182)
+  2. raiz = std::move(hijo) (eliminar_avl, casos de un hijo)
+     el nodo viejo se destruye al reemplazarse
+  3. el unique_ptr sale de alcance (fin de un test)
+end note
+#FFCDD2:unique_ptr llama a delete sobre el NodoBST;
+partition "Destructor implicito de NodoBST" {
+  :No hay codigo escrito por el programador\nel compilador destruye los miembros\nen ORDEN INVERSO al de declaracion;
+  #FFCDD2:altura: tipo int, no hace nada;
+  #FFCDD2:der: unique_ptr\nsi no es nullptr se destruye todo el subarbol derecho\nrecursivamente;
+  #FFCDD2:izq: unique_ptr\nsi no es nullptr se destruye todo el subarbol izquierdo\nrecursivamente;
+  #FFCDD2:valor: se destruye con su propio destructor;
+  #FFCDD2:clave: se destruye con su propio destructor;
+}
+:La memoria del nodo se devuelve al heap;
+note right
+  Orden global: posorden. Primero se libera cada hijo
+  y al final el padre.
+  En una hoja der e izq valen nullptr: no hay recursion.
+end note
+stop
+
+legend bottom right
+  Verde: se crea un objeto o una variable
+  Rojo: se destruye un objeto o una variable
+  Nota amarilla: estado de la memoria o explicacion
+endlegend
+@enduml

@@ -1,0 +1,63 @@
+@startuml 00_vista_general_llamadas
+skinparam shadowing false
+skinparam ArrowColor #1F4E79
+skinparam ActivityBorderColor #1F4E79
+skinparam ActivityBackgroundColor #EAF2FB
+skinparam ActivityDiamondBorderColor #BF9000
+skinparam ActivityDiamondBackgroundColor #FFF2CC
+skinparam NoteBackgroundColor #FFFBE6
+skinparam NoteBorderColor #BF9000
+skinparam ClassBackgroundColor #EAF2FB
+skinparam ClassBorderColor #1F4E79
+title Vista general de avl.h - quién llama a quién
+skinparam componentStyle rectangle
+left to right direction
+
+package "Estructura" #EAF2FB {
+  [NodoBST] as nodo
+}
+package "Auxiliares (O(1))" #E8F5E9 {
+  [altura] as alt
+  [factor_balance] as fb
+  [actualizar_altura] as act
+}
+package "Rotaciones" #FDEDEC {
+  [rotar_derecha] as rd
+  [rotar_izquierda] as ri
+  [contador_rotaciones] as cnt
+}
+package "Reequilibrio" #FFF8E1 {
+  [balancear] as bal
+}
+package "Operaciones" #EDE7F6 {
+  [insertar_avl] as ins
+  [eliminar_avl] as del
+  [minimo] as mini
+  [buscar] as bus
+}
+package "Impresión" #ECEFF1 {
+  [imprimir_inorden] as ino
+  [imprimir_arbol] as arb
+}
+
+ins --> nodo : make_unique
+ins --> bal : al volver de la recursión
+del --> bal : al volver de la recursión
+del --> mini : caso 3 (dos hijos)
+bal --> act
+bal --> fb
+bal --> rd
+bal --> ri
+rd --> act
+ri --> act
+rd ..> cnt : ++
+ri ..> cnt : ++
+act --> alt
+fb --> alt
+arb --> fb
+
+note bottom of bus
+  buscar, minimo, insertar_avl, eliminar_avl,
+  imprimir_inorden e imprimir_arbol son recursivas.
+end note
+@enduml

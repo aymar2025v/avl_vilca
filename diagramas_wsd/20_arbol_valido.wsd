@@ -1,0 +1,78 @@
+@startuml 20_arbol_valido
+' ---------- Estilo técnico formal (esquinas rectas) ----------
+skinparam shadowing false
+skinparam roundCorner 0
+skinparam ActivityRoundCorner 0
+skinparam defaultFontName Arial
+skinparam ActivityFontName Consolas
+skinparam ActivityFontSize 12
+skinparam NoteFontSize 11
+skinparam ArrowColor #000000
+skinparam ArrowThickness 1
+skinparam ActivityBorderColor #000000
+skinparam ActivityBorderThickness 1.2
+skinparam ActivityBackgroundColor #F2F2F2
+skinparam ActivityDiamondBorderColor #000000
+skinparam ActivityDiamondBackgroundColor #FFFFFF
+skinparam ActivityStartColor #000000
+skinparam ActivityEndColor #000000
+skinparam NoteBackgroundColor #FFFFFF
+skinparam NoteBorderColor #595959
+skinparam NoteBorderThickness 1
+skinparam PartitionBorderColor #595959
+skinparam PartitionBackgroundColor #FFFFFF
+skinparam TitleFontSize 16
+skinparam TitleBorderThickness 1.5
+skinparam TitleBorderColor #000000
+skinparam TitleBorderRoundCorner 0
+skinparam LegendBackgroundColor #FFFFFF
+skinparam LegendBorderColor #000000
+skinparam LegendBorderThickness 1
+skinparam LegendBorderRoundCorner 0
+skinparam ClassBackgroundColor #FFFFFF
+skinparam ClassBorderColor #000000
+skinparam ClassAttributeIconSize 0
+skinparam PackageStyle rectangle
+skinparam PackageBorderColor #595959
+skinparam ComponentBackgroundColor #F2F2F2
+skinparam ComponentBorderColor #000000
+skinparam SequenceParticipantBackgroundColor #F2F2F2
+skinparam SequenceParticipantBorderColor #000000
+skinparam SequenceLifeLineBorderColor #595959
+skinparam SequenceGroupBackgroundColor #FFFFFF
+skinparam SequenceDividerBackgroundColor #D9D9D9
+skinparam FooterFontSize 9
+footer SIS210 - Algoritmos y Estructuras de Datos  ·  UNAP 2026-II  ·  Semana 10: Árbol AVL  ·  Fuente: avl_main.cpp, líneas 51-62
+title arbol_valido(r): AVL válido y además con propiedad BST
+
+legend top
+  |= Campo |= Detalle |
+  | Entrada | r: raíz del árbol |
+  | Postcondición | true si es AVL (es_avl) y el inorden es estrictamente creciente (propiedad BST) |
+  | Complejidad | O(n) |
+endlegend
+
+start
+:Entrada: r (raíz del árbol)<
+:[1] int alt = 0;
+#DDEBF7:[2] es_avl(r, alt);
+if ([3] es_avl devolvió false ?) then (sí)
+  #FCE4D6:[4] return false;
+  note right: Alturas incorrectas o nodo desbalanceado.
+  stop
+endif
+:[5] std::vector<K> v;
+#DDEBF7:[6] recolectar(r, v);
+note right: v = claves en inorden.
+:[7] i = 1;
+while ([8] i < v.size() ?) is (sí)
+  if ([9] NO se cumple v[i-1] < v[i] ?) then (sí)
+    #FCE4D6:[10] return false;
+    note right: El inorden no es estrictamente creciente: se rompió el BST.
+    stop
+  endif
+  :[11] ++i;
+endwhile (no)
+#E2EFDA:[12] return true;
+stop
+@enduml

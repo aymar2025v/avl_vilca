@@ -1,0 +1,32 @@
+@startuml 30_main
+skinparam shadowing false
+skinparam ArrowColor #1F4E79
+skinparam ActivityBorderColor #1F4E79
+skinparam ActivityBackgroundColor #EAF2FB
+skinparam ActivityDiamondBorderColor #BF9000
+skinparam ActivityDiamondBackgroundColor #FFF2CC
+skinparam NoteBackgroundColor #FFFBE6
+skinparam NoteBorderColor #BF9000
+skinparam ClassBackgroundColor #EAF2FB
+skinparam ClassBorderColor #1F4E79
+title main() - flujo general del programa de prueba
+
+start
+:test_P1_insercion_simple();
+:test_P2_caso_LR();
+:test_P3_insercion_ordenada_grande();
+:test_P4_eliminar_hoja();
+:test_P5_eliminar_raiz_dos_hijos();
+:test_P6_eliminar_con_rebalanceo();
+:test_P7_caso_LL();
+:test_P8_caso_RL();
+:test_P9_estres_aleatorio();
+note right
+  Si algún assert falla el programa se aborta en ese test
+  y no se ejecutan los siguientes.
+  (Con -DNDEBUG los assert se desactivan.)
+end note
+:std::cout << "=== Todos los casos P1-P6 (y extras P7-P9) pasaron ===";
+#D5F0D5:return 0;
+stop
+@enduml

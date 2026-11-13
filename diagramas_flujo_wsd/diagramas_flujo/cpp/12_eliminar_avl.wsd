@@ -1,0 +1,66 @@
+@startuml 12_eliminar_avl
+skinparam shadowing false
+skinparam ActivityBackgroundColor #F4F7FB
+skinparam ActivityBorderColor #1F3A5F
+skinparam ArrowColor #1F3A5F
+skinparam NoteBackgroundColor #FFF8E1
+skinparam NoteBorderColor #C8553D
+skinparam ActivityDiamondBackgroundColor #FFF3E0
+skinparam ActivityDiamondBorderColor #1F3A5F
+skinparam PartitionBorderColor #1F3A5F
+skinparam ActivityStartColor #1F3A5F
+skinparam ActivityEndColor #1F3A5F
+
+title eliminar_avl(raiz, clave) - eliminacion con reequilibrado (avl.h lineas 170 a 204)
+
+start
+:Entrada: raiz (referencia al enlace) y clave por referencia constante;
+if (Linea 173: raiz == nullptr ?) then (si)
+  :return\nla clave no existe, no hay nada que eliminar;
+  stop
+else (no)
+endif
+if (Linea 175: clave menor que raiz->clave ?) then (si)
+  :eliminar_avl(raiz->izq, clave)\nLLAMADA RECURSIVA por la izquierda;
+elseif (Linea 177: clave mayor que raiz->clave ?) then (si)
+  :eliminar_avl(raiz->der, clave)\nLLAMADA RECURSIVA por la derecha;
+else (Linea 179: se encontro el nodo a eliminar)
+  if (Linea 180: no tiene hijos ?) then (si, CASO 1: hoja)
+    #FFCDD2:Linea 182: raiz = nullptr\nse DESTRUYE el nodo\nver diagrama 02_NodoBST_destruccion;
+  elseif (Linea 184: no tiene hijo izquierdo ?) then (si, CASO 2a: solo hijo derecho)
+    #C8E6C9:Linea 186: auto hijo = std::move(raiz->der)\nse crea la variable local hijo\nque toma el subarbol derecho;
+    #FFCDD2:Linea 187: raiz = std::move(hijo)\nel hijo ocupa el lugar del nodo\nel nodo viejo se DESTRUYE al reemplazarse;
+  elseif (Linea 189: no tiene hijo derecho ?) then (si, CASO 2b: solo hijo izquierdo)
+    #C8E6C9:Linea 191: auto hijo = std::move(raiz->izq)\nse crea la variable local hijo\nque toma el subarbol izquierdo;
+    #FFCDD2:Linea 192: raiz = std::move(hijo)\nel nodo viejo se DESTRUYE al reemplazarse;
+  else (CASO 3: tiene dos hijos)
+    :Linea 196: suc = minimo(raiz->der)\nsucesor inorden: la clave mas chica del subarbol derecho\nver diagrama 11_minimo;
+    #C8E6C9:Linea 197: K clave_suc = suc->clave\nse crea una COPIA local de la clave del sucesor;
+    note right
+      Hay que copiar ANTES de borrar:
+      si se usara una referencia al nodo del sucesor
+      quedaria colgando al destruirse ese nodo.
+    end note
+    :Linea 198: raiz->clave = clave_suc\nel nodo actual adopta la clave del sucesor;
+    :Linea 199: raiz->valor = suc->valor\ny tambien su valor;
+    :Linea 200: eliminar_avl(raiz->der, clave_suc)\nLLAMADA RECURSIVA que elimina el nodo del sucesor\ndel subarbol derecho, donde tiene a lo sumo un hijo;
+  endif
+endif
+if (Linea 203: raiz != nullptr ?) then (si, el nodo sigue existiendo)
+  :balancear(raiz)\nse reequilibra al VOLVER de la recursion\nver diagrama 08_balancear;
+  note right
+    A diferencia de la insercion, una eliminacion puede
+    obligar a rotar en varios niveles del camino de regreso.
+  end note
+else (no, el nodo fue eliminado)
+  :No hay nada que balancear;
+endif
+#FFCDD2:Termina la funcion\nlas variables locales hijo y clave_suc se destruyen;
+stop
+
+legend bottom right
+  Verde: se crea un objeto o una variable
+  Rojo: se destruye un objeto o una variable
+  Nota amarilla: estado de la memoria o explicacion
+endlegend
+@enduml

@@ -1,0 +1,42 @@
+@startuml 13_imprimir_inorden
+skinparam shadowing false
+skinparam ActivityBackgroundColor #F4F7FB
+skinparam ActivityBorderColor #1F3A5F
+skinparam ArrowColor #1F3A5F
+skinparam NoteBackgroundColor #FFF8E1
+skinparam NoteBorderColor #C8553D
+skinparam ActivityDiamondBackgroundColor #FFF3E0
+skinparam ActivityDiamondBorderColor #1F3A5F
+skinparam PartitionBorderColor #1F3A5F
+skinparam ActivityStartColor #1F3A5F
+skinparam ActivityEndColor #1F3A5F
+
+title imprimir_inorden(n) - recorrido inorden (avl.h lineas 211 a 217)
+
+start
+:Entrada: n\nreferencia constante a un unique_ptr de NodoBST;
+note right
+  Solo lee el arbol: no crea ni destruye nodos.
+  Imprime las claves en orden ascendente.
+end note
+if (Linea 213: n == nullptr ?) then (si)
+  :return\nllegamos a un enlace vacio;
+  stop
+else (no)
+endif
+:Linea 214: imprimir_inorden(n->izq)\nprimero todo el subarbol izquierdo\nLLAMADA RECURSIVA;
+:Linea 215: std::cout escribe n->clave y un espacio\nimprime la clave del nodo actual;
+:Linea 216: imprimir_inorden(n->der)\nluego todo el subarbol derecho\nLLAMADA RECURSIVA;
+note right
+  Orden: izquierda, raiz, derecha.
+  Resultado con 1..15: 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
+  Costo O(n): cada nodo se visita una vez.
+end note
+stop
+
+legend bottom right
+  Verde: se crea un objeto o una variable
+  Rojo: se destruye un objeto o una variable
+  Nota amarilla: estado de la memoria o explicacion
+endlegend
+@enduml

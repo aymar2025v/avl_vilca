@@ -1,0 +1,75 @@
+@startuml 00_creacion_objetos_cpp
+skinparam shadowing false
+skinparam ActivityBackgroundColor #F4F7FB
+skinparam ActivityBorderColor #1F3A5F
+skinparam ArrowColor #1F3A5F
+skinparam NoteBackgroundColor #FFF8E1
+skinparam NoteBorderColor #C8553D
+skinparam ActivityDiamondBackgroundColor #FFF3E0
+skinparam ActivityDiamondBorderColor #1F3A5F
+skinparam PartitionBorderColor #1F3A5F
+skinparam ActivityStartColor #1F3A5F
+skinparam ActivityEndColor #1F3A5F
+
+title Creacion y vida de los objetos en el programa C++ (avl_main.cpp y avl.h)
+
+start
+partition "1. Dentro de un test, por ejemplo test_P1_insercion_simple" {
+  #C8E6C9:std::unique_ptr de NodoBST con int e int llamado r = nullptr\navl_main.cpp linea 58\nse crea el objeto unique_ptr en la pila;
+  note right
+    r esta VACIO: todavia no existe ningun nodo.
+    Solo existe el puntero inteligente que luego sera
+    el dueno de la raiz del arbol.
+  end note
+  #C8E6C9:contador_rotaciones = 0\nvariable global inline definida en avl.h linea 33\nse crea una sola vez al iniciar el programa;
+}
+partition "2. Primera llamada insertar_avl(r, 10, 10)" {
+  #C8E6C9:Se crean dos parametros locales\nclave = 10 y valor = 10\n(insertar_avl los recibe por valor);
+  if (r == nullptr ?) then (si)
+    #C8E6C9:std::make_unique crea el PRIMER NodoBST\nclave 10, valor 10, izq nullptr, der nullptr, altura 1\nver diagrama 01_NodoBST_constructor;
+    :r pasa a ser dueno del nodo 10\nla raiz del arbol existe;
+  else (no)
+    :No se cumple en la primera llamada;
+  endif
+}
+partition "3. Llamadas siguientes insertar_avl(r, 20, 20) y (r, 30, 30)" {
+  while (hay mas claves por insertar ?) is (si)
+    :Recursion hacia abajo comparando claves\nhasta encontrar un enlace vacio nullptr;
+    #C8E6C9:Se crea un nodo nuevo HOJA en ese enlace\n(make_unique + constructor NodoBST);
+    :Al volver de la recursion se llama a balancear;
+    if (balancear detecta fb fuera de -1 y 1 ?) then (si)
+      :Se hacen rotaciones: rotar_derecha / rotar_izquierda;
+      note right
+        Las rotaciones NO crean ni destruyen nodos.
+        Solo cambian quien es dueno de quien
+        usando std::move entre unique_ptr.
+        Dentro de cada rotacion se crea una variable
+        local y que al final queda vacia.
+      end note
+    else (no)
+      :El arbol queda como esta;
+    endif
+  endwhile (no)
+}
+partition "4. Eliminacion eliminar_avl(r, clave)" {
+  :Se busca el nodo con esa clave;
+  #FFCDD2:El nodo eliminado se DESTRUYE\n(raiz = nullptr o raiz = move del hijo);
+  :En el caso de dos hijos se crea la variable local clave_suc\nuna copia de la clave del sucesor;
+}
+partition "5. Fin del test" {
+  #FFCDD2:r sale de alcance al terminar la funcion\nse llama al destructor de unique_ptr;
+  #FFCDD2:delete del nodo raiz\nse destruye NodoBST: altura, der, izq, valor, clave;
+  #FFCDD2:der e izq son unique_ptr\nse destruyen en cascada todos los descendientes\n(posorden: primero los hijos, luego el padre);
+  note right
+    No hay delete manual ni fugas de memoria:
+    unique_ptr libera todo el arbol solo (patron RAII).
+  end note
+}
+stop
+
+legend bottom right
+  Verde: se crea un objeto o una variable
+  Rojo: se destruye un objeto o una variable
+  Nota amarilla: estado de la memoria o explicacion
+endlegend
+@enduml

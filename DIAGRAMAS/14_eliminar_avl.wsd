@@ -1,0 +1,67 @@
+@startuml 14_eliminar_avl
+skinparam shadowing false
+skinparam ArrowColor #1F4E79
+skinparam ActivityBorderColor #1F4E79
+skinparam ActivityBackgroundColor #EAF2FB
+skinparam ActivityDiamondBorderColor #BF9000
+skinparam ActivityDiamondBackgroundColor #FFF2CC
+skinparam NoteBackgroundColor #FFFBE6
+skinparam NoteBorderColor #BF9000
+skinparam ClassBackgroundColor #EAF2FB
+skinparam ClassBorderColor #1F4E79
+title eliminar_avl(raiz, clave) - eliminación con reequilibrio
+
+start
+:Entrada: raiz (unique_ptr&), clave (const K&);
+if (raiz es nullptr ?) then (sí)
+  #D5F0D5:return;
+  note right: clave inexistente, no hay nada que hacer
+  stop
+endif
+if (clave < raiz->clave ?) then (sí)
+  #FFF0B3:eliminar_avl(raiz->izq, clave);
+elseif (clave > raiz->clave ?) then (sí)
+  #FFF0B3:eliminar_avl(raiz->der, clave);
+else (clave encontrada)
+  if (no tiene hijos ?) then (sí: CASO 1 - hoja)
+    :raiz = nullptr;
+    note right: el unique_ptr libera el nodo automáticamente
+  elseif (no tiene hijo izquierdo ?) then (sí: CASO 2a)
+    :auto hijo = std::move(raiz->der);
+    :raiz = std::move(hijo);
+    note right
+      El hijo derecho ocupa el lugar del nodo.
+      Se pasa por la variable temporal "hijo" para no
+      destruir el nodo mientras se lee uno de sus miembros.
+    end note
+  elseif (no tiene hijo derecho ?) then (sí: CASO 2b)
+    :auto hijo = std::move(raiz->izq);
+    :raiz = std::move(hijo);
+    note right: el hijo izquierdo ocupa el lugar del nodo
+  else (CASO 3 - dos hijos)
+    :suc = minimo(raiz->der);
+    note right: sucesor inorden = menor clave del subárbol derecho
+    :K clave_suc = suc->clave;
+    note right
+      COPIA de la clave antes de borrar el nodo:
+      si se usara suc->clave directamente quedaría
+      una referencia colgante al destruirse el nodo.
+    end note
+    :raiz->clave = clave_suc;
+    :raiz->valor = suc->valor;
+    #FFF0B3:eliminar_avl(raiz->der, clave_suc);
+    note right: se elimina el sucesor (tiene a lo sumo 1 hijo)
+  endif
+endif
+if (raiz sigue existiendo ?) then (sí)
+  #FADBD8:balancear(raiz);
+  note right
+    Al regresar de la recursión se reequilibra cada nodo del camino.
+    A diferencia de insertar, en eliminar puede hacer falta
+    rotar en VARIOS niveles hacia arriba.
+  end note
+else (no)
+  :No hay nada que balancear;
+endif
+stop
+@enduml

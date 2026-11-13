@@ -1,0 +1,30 @@
+@startuml 05_factor_balance
+skinparam shadowing false
+skinparam ArrowColor #1F4E79
+skinparam ActivityBorderColor #1F4E79
+skinparam ActivityBackgroundColor #EAF2FB
+skinparam ActivityDiamondBorderColor #BF9000
+skinparam ActivityDiamondBackgroundColor #FFF2CC
+skinparam NoteBackgroundColor #FFFBE6
+skinparam NoteBorderColor #BF9000
+skinparam ClassBackgroundColor #EAF2FB
+skinparam ClassBorderColor #1F4E79
+title factor_balance(n) = altura(der) - altura(izq)
+
+start
+:Entrada: n (const unique_ptr<NodoBST>&);
+if (n existe ?) then (sí)
+  :hd = altura(n->der);
+  :hi = altura(n->izq);
+  #D5F0D5:return hd - hi;
+else (no)
+  #D5F0D5:return 0;
+endif
+note right
+  Interpretación:
+  fb = -1, 0, +1  -> nodo equilibrado (AVL válido)
+  fb >= +2        -> pesado a la DERECHA
+  fb <= -2        -> pesado a la IZQUIERDA
+end note
+stop
+@enduml

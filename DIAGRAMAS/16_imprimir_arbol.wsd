@@ -1,0 +1,38 @@
+@startuml 16_imprimir_arbol
+skinparam shadowing false
+skinparam ArrowColor #1F4E79
+skinparam ActivityBorderColor #1F4E79
+skinparam ActivityBackgroundColor #EAF2FB
+skinparam ActivityDiamondBorderColor #BF9000
+skinparam ActivityDiamondBackgroundColor #FFF2CC
+skinparam NoteBackgroundColor #FFFBE6
+skinparam NoteBorderColor #BF9000
+skinparam ClassBackgroundColor #EAF2FB
+skinparam ClassBorderColor #1F4E79
+title imprimir_arbol(n, nivel = 0) - dibuja el árbol "de lado"
+
+start
+:Entrada: n (const unique_ptr&), nivel (profundidad, por defecto 0);
+if (n es nullptr ?) then (sí)
+  #D5F0D5:return;
+  stop
+endif
+#FFF0B3:imprimir_arbol(n->der, nivel + 1);
+note right: primero el hijo DERECHO (queda arriba en pantalla)
+:std::cout << std::string(nivel * 6, ' ')\n<< n->clave << " (h=" << n->altura\n<< ", fb=" << factor_balance(n) << ")"\ny salto de línea
+note right
+  Sangría de 6 espacios por nivel.
+  Muestra clave, altura y factor de balance.
+end note
+#FFF0B3:imprimir_arbol(n->izq, nivel + 1);
+note right
+  Después el hijo IZQUIERDO (queda abajo).
+  Salida para el árbol 20 (10, 30):
+  <code>
+        30 (h=1, fb=0)
+  20 (h=2, fb=0)
+        10 (h=1, fb=0)
+  </code>
+end note
+stop
+@enduml

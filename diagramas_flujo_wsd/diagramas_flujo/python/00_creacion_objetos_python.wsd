@@ -1,0 +1,53 @@
+@startuml 00_creacion_objetos_python
+skinparam shadowing false
+skinparam ActivityBackgroundColor #F4F7FB
+skinparam ActivityBorderColor #1F3A5F
+skinparam ArrowColor #1F3A5F
+skinparam NoteBackgroundColor #FFF8E1
+skinparam NoteBorderColor #C8553D
+skinparam ActivityDiamondBackgroundColor #FFF3E0
+skinparam ActivityDiamondBorderColor #1F3A5F
+skinparam PartitionBorderColor #1F3A5F
+skinparam ActivityStartColor #1F3A5F
+skinparam ActivityEndColor #1F3A5F
+
+title Creacion y vida de los objetos en avl_python.py
+
+start
+partition "1. Arranque: python avl_python.py" {
+  :Python ejecuta el modulo\ndefine funciones, la clase Nodo, la dataclass EstudianteUNAP y la clase SIGA_AVL\nlos nombres quedan listos pero todavia no hay arboles;
+  :if ~_~_name~_~_ == '~_~_main~_~_'\nllama a ejecutar_experimento() y luego a menu();
+}
+partition "2. ejecutar_experimento (lineas 159 a 169)" {
+  :random.seed(2026)\nsemilla fija para repetir los resultados;
+  while (hay mas valores de n en 100, 500, 1000, 5000, 10000 ?) is (si)
+    #C8E6C9:experimento(n, 'ordered') crea la lista claves = list(range(1, n + 1))\nluego los arboles raiz_bst y raiz_avl\nver diagrama 13_experimento;
+    #C8E6C9:experimento(n, 'random') crea otra lista claves y la baraja\ny vuelve a crear los dos arboles;
+    #FFCDD2:Al terminar cada experimento las listas y los arboles\nquedan sin referencias: Python los libera solo\n(conteo de referencias);
+  endwhile (no)
+}
+partition "3. menu (lineas 230 a 279)" {
+  #C8E6C9:siga = SIGA_AVL()\nse crea el objeto SIGA_AVL con raiz = None y total = 0\nver diagrama 15_EstudianteUNAP_y_SIGA_init;
+  #C8E6C9:muestra = lista con 10 EstudianteUNAP(...)\ncada llamada crea un objeto dataclass\ncon codigo, nombre, escuela y promedio;
+  while (hay mas estudiantes en muestra ?) is (si)
+    :siga.matricular(e)\nver diagrama 16_matricular;
+    #C8E6C9:Si el codigo es nuevo, insertar_avl llega a un hueco\ny ejecuta Nodo(clave, valor)\nSE CREA UN OBJETO Nodo\nver diagrama 01_Nodo_init;
+    :Si hay desbalance, balancear rota\nlas rotaciones NO crean nodos\nsolo reasignan referencias izq y der;
+  endwhile (no)
+  :Opcion 1 del menu: lee codigo, nombre, escuela y promedio\ny crea un EstudianteUNAP nuevo con esos datos;
+  note right
+    Cada nodo guarda en valor una REFERENCIA
+    al objeto EstudianteUNAP, no una copia.
+  end note
+}
+partition "4. Liberacion de memoria" {
+  #FFCDD2:Python no tiene delete ni unique_ptr\nun objeto se libera cuando nadie lo referencia\nal terminar el programa se libera todo;
+}
+stop
+
+legend bottom right
+  Verde: se crea un objeto o una variable
+  Rojo: se destruye un objeto o una variable
+  Nota amarilla: estado de la memoria o explicacion
+endlegend
+@enduml

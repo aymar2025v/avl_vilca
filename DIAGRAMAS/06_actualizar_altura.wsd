@@ -1,0 +1,28 @@
+@startuml 06_actualizar_altura
+skinparam shadowing false
+skinparam ArrowColor #1F4E79
+skinparam ActivityBorderColor #1F4E79
+skinparam ActivityBackgroundColor #EAF2FB
+skinparam ActivityDiamondBorderColor #BF9000
+skinparam ActivityDiamondBackgroundColor #FFF2CC
+skinparam NoteBackgroundColor #FFFBE6
+skinparam NoteBorderColor #BF9000
+skinparam ClassBackgroundColor #EAF2FB
+skinparam ClassBorderColor #1F4E79
+title actualizar_altura(n) - recalcula la altura de un nodo
+
+start
+:Entrada: n (unique_ptr<NodoBST>&);
+if (n existe ?) then (sí)
+  :ai = altura(n->izq);
+  :ad = altura(n->der);
+  :n->altura = 1 + max(ai, ad);
+  note right
+    Ejemplo: hijo izq con h=2, hijo der con h=1
+    -> n->altura = 1 + max(2, 1) = 3
+  end note
+else (no)
+  :No hace nada;
+endif
+stop
+@enduml

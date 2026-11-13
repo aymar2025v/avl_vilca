@@ -1,0 +1,45 @@
+@startuml 04_factor_balance
+skinparam shadowing false
+skinparam ActivityBackgroundColor #F4F7FB
+skinparam ActivityBorderColor #1F3A5F
+skinparam ArrowColor #1F3A5F
+skinparam NoteBackgroundColor #FFF8E1
+skinparam NoteBorderColor #C8553D
+skinparam ActivityDiamondBackgroundColor #FFF3E0
+skinparam ActivityDiamondBorderColor #1F3A5F
+skinparam PartitionBorderColor #1F3A5F
+skinparam ActivityStartColor #1F3A5F
+skinparam ActivityEndColor #1F3A5F
+
+title factor_balance(n) - factor de balance de un nodo (avl.h lineas 46 a 48)
+
+start
+:Entrada: n\nreferencia constante a un unique_ptr de NodoBST;
+if (n != nullptr ?) then (si)
+  :Primer termino: altura de n->der\nllama a altura() ver diagrama 03_altura;
+  note right
+    No hay variables nombradas: la expresion
+    es altura(n->der) - altura(n->izq)
+    y el compilador usa dos valores temporales int.
+  end note
+  :Segundo termino: altura de n->izq\nllama a altura();
+  :fb = altura(n->der) - altura(n->izq);
+  note right
+    fb mayor que 0: nodo pesado a la derecha
+    fb igual a 0: nodo equilibrado
+    fb menor que 0: nodo pesado a la izquierda
+    Un AVL valido tiene fb en -1, 0 o 1
+    en todos sus nodos.
+  end note
+  :return fb;
+else (no, subarbol vacio)
+  :return 0\nun nodo inexistente se considera equilibrado;
+endif
+stop
+
+legend bottom right
+  Verde: se crea un objeto o una variable
+  Rojo: se destruye un objeto o una variable
+  Nota amarilla: estado de la memoria o explicacion
+endlegend
+@enduml

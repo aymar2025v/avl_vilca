@@ -1,0 +1,33 @@
+DIAGRAMAS DE FLUJO (PlantUML) - Practica 10 AVL
+================================================
+Como verlos en VS Code:
+  1. Instalar la extension "PlantUML" (jebbs.plantuml). Necesita Java instalado.
+  2. Abrir un archivo .wsd y presionar Alt+D para ver la vista previa.
+  3. Para exportar a imagen: Ctrl+Shift+P -> "PlantUML: Export Current Diagram".
+
+Convenciones de color:
+  Verde  = se crea un objeto o una variable
+  Rojo   = se destruye un objeto o una variable
+  Nota amarilla = estado de la memoria o explicacion
+Cada paso indica el numero de linea del archivo fuente (avl.h o avl_python.py).
+
+cpp/  (avl.h, C++17)
+  00_creacion_objetos_cpp        vida de los objetos en un test
+  01_NodoBST_constructor         creacion de un nodo
+  02_NodoBST_destruccion         destruccion de un nodo
+  03_altura   04_factor_balance   05_actualizar_altura
+  06_rotar_derecha   07_rotar_izquierda   08_balancear
+  09_insertar_avl   10_buscar   11_minimo   12_eliminar_avl
+  13_imprimir_inorden   14_imprimir_arbol
+
+python/  (avl_python.py)
+  00_creacion_objetos_python     vida de los objetos en el programa
+  01_Nodo_init                   creacion de un Nodo
+  02_height   03_fb   04_actualizar_altura
+  05_rotar_der   06_rotar_izq   07_balancear
+  08_insertar_avl   09_buscar   10_inorden
+  11_insertar_bst   12_altura_arbol
+  13_experimento   14_ejecutar_experimento
+  15_EstudianteUNAP_y_SIGA_init  creacion de EstudianteUNAP y SIGA_AVL
+  16_matricular   17_buscar_estudiante   18_listar_ordenado
+  19_estadisticas   20_menu

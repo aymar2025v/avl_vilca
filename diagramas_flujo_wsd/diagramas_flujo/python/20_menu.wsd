@@ -1,0 +1,61 @@
+@startuml 20_menu
+skinparam shadowing false
+skinparam ActivityBackgroundColor #F4F7FB
+skinparam ActivityBorderColor #1F3A5F
+skinparam ArrowColor #1F3A5F
+skinparam NoteBackgroundColor #FFF8E1
+skinparam NoteBorderColor #C8553D
+skinparam ActivityDiamondBackgroundColor #FFF3E0
+skinparam ActivityDiamondBorderColor #1F3A5F
+skinparam PartitionBorderColor #1F3A5F
+skinparam ActivityStartColor #1F3A5F
+skinparam ActivityEndColor #1F3A5F
+
+title menu() - menu interactivo del SIGA-UNAP-AVL (avl_python.py lineas 230 a 279)
+
+start
+#C8E6C9:Linea 231: siga = SIGA_AVL()\nse crea el sistema vacio\nver diagrama 15_EstudianteUNAP_y_SIGA_init;
+#C8E6C9:Lineas 233 a 244: muestra = [ 10 EstudianteUNAP(...) ]\nse crea la lista con los 10 estudiantes de muestra\ncodigos 2026100001 al 2026100010;
+:Linea 245: print Cargando 10 estudiantes;
+while (Linea 246: hay mas estudiantes en muestra ?) is (si)
+  :Linea 247: siga.matricular(e)\nver diagrama 16_matricular;
+endwhile (no)
+repeat
+  :Lineas 250 a 255: print del menu\n1 Matricular, 2 Buscar, 3 Listar, 4 Estadisticas, 5 Salir;
+  :Linea 257: op = input('Opcion: ').strip()\nse crea op con el texto que escribe el usuario;
+  if (Linea 258: input lanza EOFError por fin de entrada ?) then (si)
+    :Linea 259: break\nsale del ciclo sin error;
+    stop
+  else (no)
+  endif
+  switch (Linea 260 en adelante: valor de op ?)
+  case (op == '1')
+    #C8E6C9:Lineas 261 a 263: cod, nom y esc\nlee codigo, nombre y escuela con input;
+    :Linea 265: prom = float(input('Promedio: '));
+    if (float lanza ValueError ?) then (si)
+      :Linea 267: print Promedio invalido\nLinea 268: continue\nvuelve al inicio del ciclo y muestra el menu;
+    else (no)
+      #C8E6C9:Linea 269: EstudianteUNAP(cod, nom, esc, prom)\nSE CREA UN OBJETO EstudianteUNAP nuevo\nver diagrama 15_EstudianteUNAP_y_SIGA_init;
+      :Linea 269: siga.matricular(el estudiante nuevo)\nver diagrama 16_matricular;
+    endif
+  case (op == '2')
+    :Linea 271: siga.buscar_estudiante(input('Codigo: ').strip())\nver diagrama 17_buscar_estudiante;
+  case (op == '3')
+    :Linea 273: siga.listar_ordenado()\nver diagrama 18_listar_ordenado;
+  case (op == '4')
+    :Linea 275: siga.estadisticas()\nver diagrama 19_estadisticas;
+  case (op == '5')
+    :Linea 277: break\nsale del ciclo;
+    stop
+  case (otro valor)
+    :Linea 279: print Opcion no valida;
+  endswitch
+repeat while (True ?) is (siempre)
+stop
+
+legend bottom right
+  Verde: se crea un objeto o una variable
+  Rojo: se destruye un objeto o una variable
+  Nota amarilla: estado de la memoria o explicacion
+endlegend
+@enduml

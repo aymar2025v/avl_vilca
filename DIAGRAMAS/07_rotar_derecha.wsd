@@ -1,0 +1,68 @@
+@startuml 07_rotar_derecha
+skinparam shadowing false
+skinparam ArrowColor #1F4E79
+skinparam ActivityBorderColor #1F4E79
+skinparam ActivityBackgroundColor #EAF2FB
+skinparam ActivityDiamondBorderColor #BF9000
+skinparam ActivityDiamondBackgroundColor #FFF2CC
+skinparam NoteBackgroundColor #FFFBE6
+skinparam NoteBorderColor #BF9000
+skinparam ClassBackgroundColor #EAF2FB
+skinparam ClassBorderColor #1F4E79
+title rotar_derecha(z) - corrige el caso LL
+
+start
+:Entrada: z = referencia al unique_ptr que apunta al nodo desbalanceado\nPrecondición: z->izq no es nullptr;
+note right
+  Estado inicial:
+  <code>
+         z
+        / \
+       y   T4
+      / \
+     x   T3
+  </code>
+end note
+:auto y = std::move(z->izq);
+note right
+  y toma la propiedad del hijo izquierdo.
+  z->izq queda en nullptr.
+end note
+:z->izq = std::move(y->der);
+note right
+  El subárbol T3 (hijo derecho de y)
+  pasa a ser hijo izquierdo de z.
+  y->der queda en nullptr.
+end note
+#FADBD8:actualizar_altura(z);
+note right
+  z ya perdió a y y ganó T3.
+  Se actualiza PRIMERO z porque la altura
+  de y depende de la altura de z.
+end note
+:y->der = std::move(z);
+note right
+  z (con su altura nueva) pasa a ser hijo derecho de y.
+  La referencia z queda momentáneamente en nullptr.
+end note
+:z = std::move(y);
+note right
+  La referencia z es el "hueco" del padre (o la raíz del árbol).
+  Ahora apunta a y: el padre queda enlazado
+  a la nueva raíz sin tocarlo.
+end note
+#FADBD8:actualizar_altura(z);
+note right: z ahora es y: altura = 1 + max(altura x, altura del z antiguo)
+:++contador_rotaciones;
+note right
+  Estado final:
+  <code>
+         y
+       /   \
+      x     z
+           / \
+          T3  T4
+  </code>
+end note
+stop
+@enduml

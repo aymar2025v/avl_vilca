@@ -1,0 +1,93 @@
+@startuml 11_traza_insertar_10_20_30
+' ---------- Estilo técnico formal (esquinas rectas) ----------
+skinparam shadowing false
+skinparam roundCorner 0
+skinparam ActivityRoundCorner 0
+skinparam defaultFontName Arial
+skinparam ActivityFontName Consolas
+skinparam ActivityFontSize 12
+skinparam NoteFontSize 11
+skinparam ArrowColor #000000
+skinparam ArrowThickness 1
+skinparam ActivityBorderColor #000000
+skinparam ActivityBorderThickness 1.2
+skinparam ActivityBackgroundColor #F2F2F2
+skinparam ActivityDiamondBorderColor #000000
+skinparam ActivityDiamondBackgroundColor #FFFFFF
+skinparam ActivityStartColor #000000
+skinparam ActivityEndColor #000000
+skinparam NoteBackgroundColor #FFFFFF
+skinparam NoteBorderColor #595959
+skinparam NoteBorderThickness 1
+skinparam PartitionBorderColor #595959
+skinparam PartitionBackgroundColor #FFFFFF
+skinparam TitleFontSize 16
+skinparam TitleBorderThickness 1.5
+skinparam TitleBorderColor #000000
+skinparam TitleBorderRoundCorner 0
+skinparam LegendBackgroundColor #FFFFFF
+skinparam LegendBorderColor #000000
+skinparam LegendBorderThickness 1
+skinparam LegendBorderRoundCorner 0
+skinparam ClassBackgroundColor #FFFFFF
+skinparam ClassBorderColor #000000
+skinparam ClassAttributeIconSize 0
+skinparam PackageStyle rectangle
+skinparam PackageBorderColor #595959
+skinparam ComponentBackgroundColor #F2F2F2
+skinparam ComponentBorderColor #000000
+skinparam SequenceParticipantBackgroundColor #F2F2F2
+skinparam SequenceParticipantBorderColor #000000
+skinparam SequenceLifeLineBorderColor #595959
+skinparam SequenceGroupBackgroundColor #FFFFFF
+skinparam SequenceDividerBackgroundColor #D9D9D9
+skinparam FooterFontSize 9
+footer SIS210 - Algoritmos y Estructuras de Datos  ·  UNAP 2026-II  ·  Semana 10: Árbol AVL  ·  Fuente: avl.h, líneas 144-162 y 120-137
+title Traza de pila: insertar 30 en el árbol 10 -> 20 (caso RR)
+autonumber
+participant main
+participant "insertar_avl\n(raiz = 10)" as I1
+participant "insertar_avl\n(raiz = 20)" as I2
+participant "insertar_avl\n(raiz = nullptr)" as I3
+participant balancear as B
+participant rotar_izquierda as R
+
+note over main
+  Antes de insertar: 10 tiene hijo derecho 20 (altura 2, fb = +1).
+end note
+main -> I1: insertar_avl(r, 30, 30)
+activate I1
+
+== Fase 1: descenso recursivo ==
+I1 -> I2: 30 > 10: insertar_avl(raiz->der, 30)
+activate I2
+I2 -> I3: 30 > 20: insertar_avl(raiz->der, 30)
+activate I3
+I3 -> I3: raiz == nullptr: make_unique(30)
+I3 --> I2: return (hoja, no se balancea)
+deactivate I3
+
+== Fase 2: retorno y reequilibrio ==
+I2 -> B: balancear(nodo 20)
+activate B
+B --> I2: altura 2, fb = +1: equilibrado, sin rotación
+deactivate B
+I2 --> I1: return
+deactivate I2
+I1 -> B: balancear(nodo 10)
+activate B
+B -> B: actualizar_altura: h = 3
+B -> B: fb = 2 - 0 = +2 (fb > 1)
+B -> B: fb del hijo der (20) = +1, no es < 0: caso RR
+B -> R: rotar_izquierda(n)
+activate R
+R -> R: y = 20; T2 = nullptr pasa a 10->der
+R -> R: 10 queda como hijo izquierdo de 20
+R --> B: ++contador_rotaciones (= 1)
+deactivate R
+B --> I1: subárbol equilibrado
+deactivate B
+
+I1 --> main: raíz 20 con hijos 10 y 30 (h = 2)
+deactivate I1
+@enduml

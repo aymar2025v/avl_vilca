@@ -1,0 +1,43 @@
+@startuml 12_altura_arbol
+skinparam shadowing false
+skinparam ActivityBackgroundColor #F4F7FB
+skinparam ActivityBorderColor #1F3A5F
+skinparam ArrowColor #1F3A5F
+skinparam NoteBackgroundColor #FFF8E1
+skinparam NoteBorderColor #C8553D
+skinparam ActivityDiamondBackgroundColor #FFF3E0
+skinparam ActivityDiamondBorderColor #1F3A5F
+skinparam PartitionBorderColor #1F3A5F
+skinparam ActivityStartColor #1F3A5F
+skinparam ActivityEndColor #1F3A5F
+
+title altura_arbol(n) - altura real recorriendo el arbol (avl_python.py lineas 129 a 133)
+
+start
+:Entrada: n (un Nodo o None);
+note right
+  Calcula la altura REAL recorriendo todo el arbol.
+  No usa el campo altura, asi mide el BST
+  sin depender de datos guardados.
+end note
+if (Linea 131: n is None ?) then (si)
+  :Linea 132: return 0\nun arbol vacio mide 0;
+  stop
+else (no)
+endif
+:Linea 133: altura_arbol(n.izq)\naltura del subarbol izquierdo\nLLAMADA RECURSIVA;
+:Linea 133: altura_arbol(n.der)\naltura del subarbol derecho\nLLAMADA RECURSIVA;
+:Linea 133: return 1 + max de ambas alturas;
+note right
+  Costo O(n). Con n = 10000 claves ordenadas en un BST
+  la recursion llega a profundidad 10000
+  por eso experimento sube el limite de recursion.
+end note
+stop
+
+legend bottom right
+  Verde: se crea un objeto o una variable
+  Rojo: se destruye un objeto o una variable
+  Nota amarilla: estado de la memoria o explicacion
+endlegend
+@enduml

@@ -1,0 +1,45 @@
+@startuml 05_rotar_der
+skinparam shadowing false
+skinparam ActivityBackgroundColor #F4F7FB
+skinparam ActivityBorderColor #1F3A5F
+skinparam ArrowColor #1F3A5F
+skinparam NoteBackgroundColor #FFF8E1
+skinparam NoteBorderColor #C8553D
+skinparam ActivityDiamondBackgroundColor #FFF3E0
+skinparam ActivityDiamondBorderColor #1F3A5F
+skinparam PartitionBorderColor #1F3A5F
+skinparam ActivityStartColor #1F3A5F
+skinparam ActivityEndColor #1F3A5F
+
+title rotar_der(z) - rotacion simple a la derecha, caso LL (avl_python.py lineas 46 a 53)
+
+start
+:Entrada: z\nel Nodo desbalanceado\n(z.izq no es None);
+note right
+  Ejemplo: z = 30, y = 20, x = 10
+  T3 = nodo 25 (hijo derecho de 20)
+  y 35 es hijo derecho de 30.
+  A diferencia de C++, esta funcion DEVUELVE
+  la nueva raiz del subarbol y el llamador la guarda.
+end note
+#C8E6C9:Linea 48: y = z.izq\nse crea la variable local y como segunda referencia\nal nodo 20 (no se copia el nodo);
+:Linea 49: z.izq = y.der\nel subarbol T3 (nodo 25) pasa a ser hijo izquierdo de 30;
+:Linea 50: y.der = z\nel nodo 30 pasa a ser hijo derecho de 20;
+:Linea 51: actualizar_altura(z)\nprimero el nodo 30 (el que baja)\nver diagrama 04_actualizar_altura;
+:Linea 52: actualizar_altura(y)\nluego el nodo 20 (el que sube);
+:Linea 53: return y\ndevuelve la nueva raiz del subarbol;
+note right
+  El llamador debe asignar el resultado, por ejemplo:
+  n.izq = rotar_der(n.izq)  o  return rotar_der(n)
+  Si no lo hace, el padre seguiria apuntando al nodo 30.
+  No se crea ni se destruye ningun nodo.
+end note
+#FFCDD2:Al terminar la funcion la variable local y desaparece\nel nodo 20 sigue vivo porque el llamador lo recibe;
+stop
+
+legend bottom right
+  Verde: se crea un objeto o una variable
+  Rojo: se destruye un objeto o una variable
+  Nota amarilla: estado de la memoria o explicacion
+endlegend
+@enduml

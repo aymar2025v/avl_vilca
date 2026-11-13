@@ -1,0 +1,54 @@
+@startuml 08_insertar_avl
+skinparam shadowing false
+skinparam ActivityBackgroundColor #F4F7FB
+skinparam ActivityBorderColor #1F3A5F
+skinparam ArrowColor #1F3A5F
+skinparam NoteBackgroundColor #FFF8E1
+skinparam NoteBorderColor #C8553D
+skinparam ActivityDiamondBackgroundColor #FFF3E0
+skinparam ActivityDiamondBorderColor #1F3A5F
+skinparam PartitionBorderColor #1F3A5F
+skinparam ActivityStartColor #1F3A5F
+skinparam ActivityEndColor #1F3A5F
+
+title insertar_avl(raiz, clave, valor=None) - insercion con reequilibrado (avl_python.py lineas 81 a 92)
+
+start
+:Entrada: raiz (un Nodo o None), clave y valor;
+note right
+  La funcion DEVUELVE la raiz del subarbol ya modificado.
+  Cada nivel de la recursion guarda lo que devuelve
+  el nivel de abajo en su propio hijo.
+end note
+if (Linea 83: raiz is None ?) then (si, se encontro el hueco)
+  #C8E6C9:Linea 84: return Nodo(clave, valor)\nSE CREA UN OBJETO Nodo nuevo\nver diagrama 01_Nodo_init;
+  stop
+else (no)
+endif
+if (Linea 85: clave menor que raiz.clave ?) then (si)
+  :Linea 86: raiz.izq = insertar_avl(raiz.izq, clave, valor)\nLLAMADA RECURSIVA por la izquierda\nel resultado reemplaza al hijo izquierdo;
+elseif (Linea 87: clave mayor que raiz.clave ?) then (si)
+  :Linea 88: raiz.der = insertar_avl(raiz.der, clave, valor)\nLLAMADA RECURSIVA por la derecha\nel resultado reemplaza al hijo derecho;
+else (Linea 89: las claves son iguales)
+  :Linea 90: raiz.valor = valor\nno se crea nodo, solo se actualiza el valor;
+  :Linea 91: return raiz\nla forma del arbol no cambio;
+  stop
+endif
+:Linea 92: return balancear(raiz)\nse ejecuta al VOLVER de la recursion\ny devuelve la raiz del subarbol ya equilibrado\nver diagrama 07_balancear;
+note right
+  Ejemplo: insertar 30 en el arbol 10 -> 20
+  1. insertar_avl(10) baja por la derecha
+  2. insertar_avl(20) baja por la derecha
+  3. insertar_avl(None) devuelve Nodo(30)
+  4. 20.der = nodo 30, balancear(20) devuelve 20
+  5. 10.der = 20, balancear(10) detecta f = 2,
+     caso RR, rotar_izq y devuelve 20 como nueva raiz.
+end note
+stop
+
+legend bottom right
+  Verde: se crea un objeto o una variable
+  Rojo: se destruye un objeto o una variable
+  Nota amarilla: estado de la memoria o explicacion
+endlegend
+@enduml

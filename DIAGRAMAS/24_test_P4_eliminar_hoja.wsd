@@ -1,0 +1,33 @@
+@startuml 24_test_P4_eliminar_hoja
+skinparam shadowing false
+skinparam ArrowColor #1F4E79
+skinparam ActivityBorderColor #1F4E79
+skinparam ActivityBackgroundColor #EAF2FB
+skinparam ActivityDiamondBorderColor #BF9000
+skinparam ActivityDiamondBackgroundColor #FFF2CC
+skinparam NoteBackgroundColor #FFFBE6
+skinparam NoteBorderColor #BF9000
+skinparam ClassBackgroundColor #EAF2FB
+skinparam ClassBorderColor #1F4E79
+title test_P4_eliminar_hoja() - eliminar una hoja
+
+start
+:r = nullptr;
+:insertar 20, 10 y 30 (bucle for sobre la lista);
+note right
+  <code>
+      20
+     /  \
+    10   30
+  </code>
+end note
+:eliminar_avl(r, 10);
+note right
+  10 es hoja (caso 1).
+  Queda 20 con solo el hijo 30: fb = +1, sigue AVL.
+end note
+:assert(buscar(r, 10) es nullptr);
+:assert(h(r) <= 2);
+:std::cout << "[P4 OK] eliminar_hoja";
+stop
+@enduml

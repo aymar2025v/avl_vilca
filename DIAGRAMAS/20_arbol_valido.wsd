@@ -1,0 +1,36 @@
+@startuml 20_arbol_valido
+skinparam shadowing false
+skinparam ArrowColor #1F4E79
+skinparam ActivityBorderColor #1F4E79
+skinparam ActivityBackgroundColor #EAF2FB
+skinparam ActivityDiamondBorderColor #BF9000
+skinparam ActivityDiamondBackgroundColor #FFF2CC
+skinparam NoteBackgroundColor #FFFBE6
+skinparam NoteBorderColor #BF9000
+skinparam ClassBackgroundColor #EAF2FB
+skinparam ClassBorderColor #1F4E79
+title arbol_valido(r) - AVL válido y además con propiedad BST
+
+start
+:Entrada: r (raíz del árbol);
+:int alt = 0;
+if (es_avl(r, alt) es falso ?) then (sí)
+  #FADBD8:return false;
+  note right: alturas incorrectas o nodo desbalanceado
+  stop
+endif
+:std::vector<K> v;
+#FFF0B3:recolectar(r, v);
+note right: v = claves en inorden
+:i = 1;
+while (i < v.size() ?) is (sí)
+  if (NO se cumple v[i-1] < v[i] ?) then (sí)
+    #FADBD8:return false;
+    note right: el inorden no es estrictamente creciente: se rompió el BST
+    stop
+  endif
+  :++i;
+endwhile (no)
+#D5F0D5:return true;
+stop
+@enduml

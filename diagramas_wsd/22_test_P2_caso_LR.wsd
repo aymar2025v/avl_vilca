@@ -1,0 +1,79 @@
+@startuml 22_test_P2_caso_LR
+' ---------- Estilo técnico formal (esquinas rectas) ----------
+skinparam shadowing false
+skinparam roundCorner 0
+skinparam ActivityRoundCorner 0
+skinparam defaultFontName Arial
+skinparam ActivityFontName Consolas
+skinparam ActivityFontSize 12
+skinparam NoteFontSize 11
+skinparam ArrowColor #000000
+skinparam ArrowThickness 1
+skinparam ActivityBorderColor #000000
+skinparam ActivityBorderThickness 1.2
+skinparam ActivityBackgroundColor #F2F2F2
+skinparam ActivityDiamondBorderColor #000000
+skinparam ActivityDiamondBackgroundColor #FFFFFF
+skinparam ActivityStartColor #000000
+skinparam ActivityEndColor #000000
+skinparam NoteBackgroundColor #FFFFFF
+skinparam NoteBorderColor #595959
+skinparam NoteBorderThickness 1
+skinparam PartitionBorderColor #595959
+skinparam PartitionBackgroundColor #FFFFFF
+skinparam TitleFontSize 16
+skinparam TitleBorderThickness 1.5
+skinparam TitleBorderColor #000000
+skinparam TitleBorderRoundCorner 0
+skinparam LegendBackgroundColor #FFFFFF
+skinparam LegendBorderColor #000000
+skinparam LegendBorderThickness 1
+skinparam LegendBorderRoundCorner 0
+skinparam ClassBackgroundColor #FFFFFF
+skinparam ClassBorderColor #000000
+skinparam ClassAttributeIconSize 0
+skinparam PackageStyle rectangle
+skinparam PackageBorderColor #595959
+skinparam ComponentBackgroundColor #F2F2F2
+skinparam ComponentBorderColor #000000
+skinparam SequenceParticipantBackgroundColor #F2F2F2
+skinparam SequenceParticipantBorderColor #000000
+skinparam SequenceLifeLineBorderColor #595959
+skinparam SequenceGroupBackgroundColor #FFFFFF
+skinparam SequenceDividerBackgroundColor #D9D9D9
+skinparam FooterFontSize 9
+footer SIS210 - Algoritmos y Estructuras de Datos  ·  UNAP 2026-II  ·  Semana 10: Árbol AVL  ·  Fuente: avl_main.cpp, líneas 83-96
+title test_P2_caso_LR(): insertar 30, 10, 20 (caso LR)
+
+legend top
+  |= Campo |= Detalle |
+  | Objetivo | Verificar la rotación doble izquierda-derecha |
+  | Caso | LR: rotar_izquierda(n->izq) y luego rotar_derecha(n) |
+  | Resultado esperado | Raíz 20 con hijos 10 y 30, h = 2, contador_rotaciones = 2 |
+endlegend
+
+start
+partition "Preparación" {
+  :[1] r = nullptr;
+  :[2] contador_rotaciones = 0;
+}
+partition "Operación" {
+  #DDEBF7:[3] insertar_avl(r, 30, 30);
+  #DDEBF7:[4] insertar_avl(r, 10, 10);
+  #FCE4D6:[5] insertar_avl(r, 20, 20);
+  note right
+    Al insertar 20 el nodo 30 queda con fb = -2 y su hijo
+    izquierdo (10) tiene fb = +1: caso LR.
+    1) rotar_izquierda(n->izq)   2) rotar_derecha(n)
+  end note
+}
+partition "Verificación" {
+  #E4DFEC:[6] assert(r->clave == 20);
+  #E4DFEC:[7] assert(h(r) == 2);
+  #E4DFEC:[8] assert(contador_rotaciones == 2);
+  note right: Una rotación doble equivale a 2 rotaciones simples.
+  :[9] std::cout << "[P2 OK] ...">
+  #DDEBF7:[10] imprimir_arbol(r);
+}
+stop
+@enduml

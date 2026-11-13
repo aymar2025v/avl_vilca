@@ -1,0 +1,79 @@
+@startuml 24_test_P4_eliminar_hoja
+' ---------- Estilo técnico formal (esquinas rectas) ----------
+skinparam shadowing false
+skinparam roundCorner 0
+skinparam ActivityRoundCorner 0
+skinparam defaultFontName Arial
+skinparam ActivityFontName Consolas
+skinparam ActivityFontSize 12
+skinparam NoteFontSize 11
+skinparam ArrowColor #000000
+skinparam ArrowThickness 1
+skinparam ActivityBorderColor #000000
+skinparam ActivityBorderThickness 1.2
+skinparam ActivityBackgroundColor #F2F2F2
+skinparam ActivityDiamondBorderColor #000000
+skinparam ActivityDiamondBackgroundColor #FFFFFF
+skinparam ActivityStartColor #000000
+skinparam ActivityEndColor #000000
+skinparam NoteBackgroundColor #FFFFFF
+skinparam NoteBorderColor #595959
+skinparam NoteBorderThickness 1
+skinparam PartitionBorderColor #595959
+skinparam PartitionBackgroundColor #FFFFFF
+skinparam TitleFontSize 16
+skinparam TitleBorderThickness 1.5
+skinparam TitleBorderColor #000000
+skinparam TitleBorderRoundCorner 0
+skinparam LegendBackgroundColor #FFFFFF
+skinparam LegendBorderColor #000000
+skinparam LegendBorderThickness 1
+skinparam LegendBorderRoundCorner 0
+skinparam ClassBackgroundColor #FFFFFF
+skinparam ClassBorderColor #000000
+skinparam ClassAttributeIconSize 0
+skinparam PackageStyle rectangle
+skinparam PackageBorderColor #595959
+skinparam ComponentBackgroundColor #F2F2F2
+skinparam ComponentBorderColor #000000
+skinparam SequenceParticipantBackgroundColor #F2F2F2
+skinparam SequenceParticipantBorderColor #000000
+skinparam SequenceLifeLineBorderColor #595959
+skinparam SequenceGroupBackgroundColor #FFFFFF
+skinparam SequenceDividerBackgroundColor #D9D9D9
+skinparam FooterFontSize 9
+footer SIS210 - Algoritmos y Estructuras de Datos  ·  UNAP 2026-II  ·  Semana 10: Árbol AVL  ·  Fuente: avl_main.cpp, líneas 115-124
+title test_P4_eliminar_hoja(): eliminar una hoja
+
+legend top
+  |= Campo |= Detalle |
+  | Objetivo | Verificar el caso 1 de eliminación (nodo sin hijos) |
+  | Resultado esperado | 10 ya no existe y h <= 2 |
+endlegend
+
+start
+partition "Preparación" {
+  :[1] r = nullptr;
+  #DDEBF7:[2] insertar_avl para 20, 10 y 30;
+  note right
+    <code>
+        20
+       /  \
+      10   30
+    </code>
+  end note
+}
+partition "Operación" {
+  #FCE4D6:[3] eliminar_avl(r, 10);
+  note right
+    10 es hoja (caso 1). Queda 20 con solo el hijo 30:
+    fb = +1, el árbol sigue siendo AVL.
+  end note
+}
+partition "Verificación" {
+  #E4DFEC:[4] assert(buscar(r, 10) es nullptr);
+  #E4DFEC:[5] assert(h(r) <= 2);
+  :[6] std::cout << "[P4 OK] eliminar_hoja">
+}
+stop
+@enduml

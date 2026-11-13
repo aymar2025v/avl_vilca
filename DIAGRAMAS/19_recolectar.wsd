@@ -1,0 +1,28 @@
+@startuml 19_recolectar
+skinparam shadowing false
+skinparam ArrowColor #1F4E79
+skinparam ActivityBorderColor #1F4E79
+skinparam ActivityBackgroundColor #EAF2FB
+skinparam ActivityDiamondBorderColor #BF9000
+skinparam ActivityDiamondBackgroundColor #FFF2CC
+skinparam NoteBackgroundColor #FFFBE6
+skinparam NoteBorderColor #BF9000
+skinparam ClassBackgroundColor #EAF2FB
+skinparam ClassBorderColor #1F4E79
+title recolectar(n, v) - guarda las claves en inorden dentro de un vector
+
+start
+:Entrada: n (nodo), v (vector<K>& de SALIDA);
+if (n es nullptr ?) then (sí)
+  #D5F0D5:return;
+  stop
+endif
+#FFF0B3:recolectar(n->izq, v);
+:v.push_back(n->clave);
+#FFF0B3:recolectar(n->der, v);
+note right
+  Al terminar, v contiene las claves ordenadas
+  SI el árbol cumple la propiedad BST.
+end note
+stop
+@enduml

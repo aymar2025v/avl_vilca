@@ -1,0 +1,32 @@
+@startuml 23_test_P3_insercion_ordenada_grande
+skinparam shadowing false
+skinparam ArrowColor #1F4E79
+skinparam ActivityBorderColor #1F4E79
+skinparam ActivityBackgroundColor #EAF2FB
+skinparam ActivityDiamondBorderColor #BF9000
+skinparam ActivityDiamondBackgroundColor #FFF2CC
+skinparam NoteBackgroundColor #FFFBE6
+skinparam NoteBorderColor #BF9000
+skinparam ClassBackgroundColor #EAF2FB
+skinparam ClassBorderColor #1F4E79
+title test_P3_insercion_ordenada_grande() - insertar 1..15 en orden
+
+start
+:r = nullptr;
+:i = 1;
+while (i <= 15 ?) is (sí)
+  :insertar_avl(r, i, i);
+  :++i;
+endwhile (no)
+note right
+  Un BST común degeneraría en una lista (h = 15).
+  El AVL se reequilibra solo.
+end note
+:assert(h(r) <= 4);
+note right: 15 nodos caben en un árbol perfecto de altura 4
+:assert(buscar(r, 8) existe);
+:std::cout << "[P3 OK] ... h=" << h(r);
+:imprimir_inorden(r);
+note right: imprime 1 2 3 ... 15
+stop
+@enduml

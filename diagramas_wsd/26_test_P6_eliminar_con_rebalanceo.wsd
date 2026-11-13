@@ -1,0 +1,87 @@
+@startuml 26_test_P6_eliminar_con_rebalanceo
+' ---------- Estilo técnico formal (esquinas rectas) ----------
+skinparam shadowing false
+skinparam roundCorner 0
+skinparam ActivityRoundCorner 0
+skinparam defaultFontName Arial
+skinparam ActivityFontName Consolas
+skinparam ActivityFontSize 12
+skinparam NoteFontSize 11
+skinparam ArrowColor #000000
+skinparam ArrowThickness 1
+skinparam ActivityBorderColor #000000
+skinparam ActivityBorderThickness 1.2
+skinparam ActivityBackgroundColor #F2F2F2
+skinparam ActivityDiamondBorderColor #000000
+skinparam ActivityDiamondBackgroundColor #FFFFFF
+skinparam ActivityStartColor #000000
+skinparam ActivityEndColor #000000
+skinparam NoteBackgroundColor #FFFFFF
+skinparam NoteBorderColor #595959
+skinparam NoteBorderThickness 1
+skinparam PartitionBorderColor #595959
+skinparam PartitionBackgroundColor #FFFFFF
+skinparam TitleFontSize 16
+skinparam TitleBorderThickness 1.5
+skinparam TitleBorderColor #000000
+skinparam TitleBorderRoundCorner 0
+skinparam LegendBackgroundColor #FFFFFF
+skinparam LegendBorderColor #000000
+skinparam LegendBorderThickness 1
+skinparam LegendBorderRoundCorner 0
+skinparam ClassBackgroundColor #FFFFFF
+skinparam ClassBorderColor #000000
+skinparam ClassAttributeIconSize 0
+skinparam PackageStyle rectangle
+skinparam PackageBorderColor #595959
+skinparam ComponentBackgroundColor #F2F2F2
+skinparam ComponentBorderColor #000000
+skinparam SequenceParticipantBackgroundColor #F2F2F2
+skinparam SequenceParticipantBorderColor #000000
+skinparam SequenceLifeLineBorderColor #595959
+skinparam SequenceGroupBackgroundColor #FFFFFF
+skinparam SequenceDividerBackgroundColor #D9D9D9
+skinparam FooterFontSize 9
+footer SIS210 - Algoritmos y Estructuras de Datos  ·  UNAP 2026-II  ·  Semana 10: Árbol AVL  ·  Fuente: avl_main.cpp, líneas 140-152
+title test_P6_eliminar_con_rebalanceo(): insertar 1..7 y eliminar 1
+
+legend top
+  |= Campo |= Detalle |
+  | Objetivo | Verificar que la altura no aumenta tras eliminar |
+  | Resultado esperado | h antes = 3, h después = 3 (el árbol sigue equilibrado) |
+endlegend
+
+start
+partition "Preparación" {
+  :[1] r = nullptr;
+  :[2] i = 1;
+  while ([3] i <= 7 ?) is (sí)
+    #DDEBF7:[4] insertar_avl(r, i, i);
+    :[5] ++i;
+  endwhile (no)
+  note right
+    Árbol perfecto:
+    <code>
+            4
+          /   \
+         2     6
+        / \   / \
+       1   3 5   7
+    </code>
+  end note
+  :[6] int h_antes = h(r);
+  note right: h_antes = 3
+}
+partition "Operación" {
+  #FCE4D6:[7] eliminar_avl(r, 1);
+  note right
+    Se elimina la hoja 1. El nodo 2 queda solo con el hijo 3 (fb = +1)
+    y la raíz sigue equilibrada: no hace falta rotar.
+  end note
+}
+partition "Verificación" {
+  #E4DFEC:[8] assert(h(r) <= h_antes);
+  :[9] std::cout << "[P6 OK] (h antes = " << h_antes << ", h despues = " << h(r) << ")">
+}
+stop
+@enduml

@@ -1,0 +1,76 @@
+@startuml 12_buscar
+' ---------- Estilo técnico formal (esquinas rectas) ----------
+skinparam shadowing false
+skinparam roundCorner 0
+skinparam ActivityRoundCorner 0
+skinparam defaultFontName Arial
+skinparam ActivityFontName Consolas
+skinparam ActivityFontSize 12
+skinparam NoteFontSize 11
+skinparam ArrowColor #000000
+skinparam ArrowThickness 1
+skinparam ActivityBorderColor #000000
+skinparam ActivityBorderThickness 1.2
+skinparam ActivityBackgroundColor #F2F2F2
+skinparam ActivityDiamondBorderColor #000000
+skinparam ActivityDiamondBackgroundColor #FFFFFF
+skinparam ActivityStartColor #000000
+skinparam ActivityEndColor #000000
+skinparam NoteBackgroundColor #FFFFFF
+skinparam NoteBorderColor #595959
+skinparam NoteBorderThickness 1
+skinparam PartitionBorderColor #595959
+skinparam PartitionBackgroundColor #FFFFFF
+skinparam TitleFontSize 16
+skinparam TitleBorderThickness 1.5
+skinparam TitleBorderColor #000000
+skinparam TitleBorderRoundCorner 0
+skinparam LegendBackgroundColor #FFFFFF
+skinparam LegendBorderColor #000000
+skinparam LegendBorderThickness 1
+skinparam LegendBorderRoundCorner 0
+skinparam ClassBackgroundColor #FFFFFF
+skinparam ClassBorderColor #000000
+skinparam ClassAttributeIconSize 0
+skinparam PackageStyle rectangle
+skinparam PackageBorderColor #595959
+skinparam ComponentBackgroundColor #F2F2F2
+skinparam ComponentBorderColor #000000
+skinparam SequenceParticipantBackgroundColor #F2F2F2
+skinparam SequenceParticipantBorderColor #000000
+skinparam SequenceLifeLineBorderColor #595959
+skinparam SequenceGroupBackgroundColor #FFFFFF
+skinparam SequenceDividerBackgroundColor #D9D9D9
+skinparam FooterFontSize 9
+footer SIS210 - Algoritmos y Estructuras de Datos  ·  UNAP 2026-II  ·  Semana 10: Árbol AVL  ·  Fuente: avl.h, líneas 168-178
+title buscar(raiz, clave): búsqueda binaria recursiva
+
+legend top
+  |= Campo |= Detalle |
+  | Entrada | raiz: const unique_ptr<NodoBST>&,  clave: const K& |
+  | Precondición | raiz es un BST (o vacío) |
+  | Postcondición | Puntero crudo (no dueño) al nodo con esa clave, o nullptr si no existe |
+  | Complejidad | O(log n) porque la altura de un AVL es <= 1.44 log2(n) |
+endlegend
+
+start
+:Entrada: raiz (referencia constante), clave (referencia constante)<
+if ([1] raiz es nullptr ?) then (sí)
+  #E2EFDA:[2] return nullptr;
+  note right: Se llegó a un hueco: la clave no existe.
+  stop
+endif
+if ([3] clave == raiz->clave ?) then (sí)
+  #E2EFDA:[4] return raiz.get();
+  note right: Puntero CRUDO: el nodo sigue siendo propiedad del árbol.
+  stop
+endif
+if ([5] clave < raiz->clave ?) then (sí)
+  #FFF2CC:[6] return buscar(raiz->izq, clave);
+  note right: La clave es menor: se busca en el subárbol izquierdo.
+else (no)
+  #FFF2CC:[7] return buscar(raiz->der, clave);
+  note right: La clave es mayor: se busca en el subárbol derecho.
+endif
+stop
+@enduml

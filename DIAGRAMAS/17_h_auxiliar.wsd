@@ -1,0 +1,26 @@
+@startuml 17_h_auxiliar
+skinparam shadowing false
+skinparam ArrowColor #1F4E79
+skinparam ActivityBorderColor #1F4E79
+skinparam ActivityBackgroundColor #EAF2FB
+skinparam ActivityDiamondBorderColor #BF9000
+skinparam ActivityDiamondBackgroundColor #FFF2CC
+skinparam NoteBackgroundColor #FFFBE6
+skinparam NoteBorderColor #BF9000
+skinparam ClassBackgroundColor #EAF2FB
+skinparam ClassBorderColor #1F4E79
+title h(r) - función auxiliar de avl_main.cpp
+
+start
+:Entrada: r (const unique_ptr<NodoBST>&);
+if (r existe ?) then (sí)
+  #D5F0D5:return r->altura;
+else (no)
+  #D5F0D5:return 0;
+endif
+note right
+  Hace lo mismo que altura() de avl.h.
+  Se define aparte para que los tests sean más cortos: h(r).
+end note
+stop
+@enduml

@@ -1,0 +1,46 @@
+@startuml 25_test_P5_eliminar_raiz_dos_hijos
+skinparam shadowing false
+skinparam ArrowColor #1F4E79
+skinparam ActivityBorderColor #1F4E79
+skinparam ActivityBackgroundColor #EAF2FB
+skinparam ActivityDiamondBorderColor #BF9000
+skinparam ActivityDiamondBackgroundColor #FFF2CC
+skinparam NoteBackgroundColor #FFFBE6
+skinparam NoteBorderColor #BF9000
+skinparam ClassBackgroundColor #EAF2FB
+skinparam ClassBorderColor #1F4E79
+title test_P5_eliminar_raiz_dos_hijos() - eliminar la raíz con 2 hijos
+
+start
+:r = nullptr;
+:insertar 20, 10, 30, 25, 35;
+note right
+  <code>
+        20
+       /  \
+     10    30
+          /  \
+        25    35
+  </code>
+end note
+:int raiz_orig = r->clave;
+note right: guarda la raíz original (20) para imprimirla después
+:eliminar_avl(r, 20);
+note right
+  Caso 3 (dos hijos):
+  sucesor inorden = minimo del subárbol der = 25.
+  Se copia 25 a la raíz y se elimina el 25 de abajo.
+  <code>
+        25
+       /  \
+     10    30
+             \
+              35
+  </code>
+end note
+:assert(buscar(r, 20) es nullptr);
+:assert(h(r) <= 3);
+:std::cout << "[P5 OK] (raiz " << raiz_orig << " -> " << r->clave << ")";
+:imprimir_arbol(r);
+stop
+@enduml

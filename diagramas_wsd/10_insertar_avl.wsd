@@ -1,0 +1,88 @@
+@startuml 10_insertar_avl
+' ---------- Estilo técnico formal (esquinas rectas) ----------
+skinparam shadowing false
+skinparam roundCorner 0
+skinparam ActivityRoundCorner 0
+skinparam defaultFontName Arial
+skinparam ActivityFontName Consolas
+skinparam ActivityFontSize 12
+skinparam NoteFontSize 11
+skinparam ArrowColor #000000
+skinparam ArrowThickness 1
+skinparam ActivityBorderColor #000000
+skinparam ActivityBorderThickness 1.2
+skinparam ActivityBackgroundColor #F2F2F2
+skinparam ActivityDiamondBorderColor #000000
+skinparam ActivityDiamondBackgroundColor #FFFFFF
+skinparam ActivityStartColor #000000
+skinparam ActivityEndColor #000000
+skinparam NoteBackgroundColor #FFFFFF
+skinparam NoteBorderColor #595959
+skinparam NoteBorderThickness 1
+skinparam PartitionBorderColor #595959
+skinparam PartitionBackgroundColor #FFFFFF
+skinparam TitleFontSize 16
+skinparam TitleBorderThickness 1.5
+skinparam TitleBorderColor #000000
+skinparam TitleBorderRoundCorner 0
+skinparam LegendBackgroundColor #FFFFFF
+skinparam LegendBorderColor #000000
+skinparam LegendBorderThickness 1
+skinparam LegendBorderRoundCorner 0
+skinparam ClassBackgroundColor #FFFFFF
+skinparam ClassBorderColor #000000
+skinparam ClassAttributeIconSize 0
+skinparam PackageStyle rectangle
+skinparam PackageBorderColor #595959
+skinparam ComponentBackgroundColor #F2F2F2
+skinparam ComponentBorderColor #000000
+skinparam SequenceParticipantBackgroundColor #F2F2F2
+skinparam SequenceParticipantBorderColor #000000
+skinparam SequenceLifeLineBorderColor #595959
+skinparam SequenceGroupBackgroundColor #FFFFFF
+skinparam SequenceDividerBackgroundColor #D9D9D9
+skinparam FooterFontSize 9
+footer SIS210 - Algoritmos y Estructuras de Datos  ·  UNAP 2026-II  ·  Semana 10: Árbol AVL  ·  Fuente: avl.h, líneas 144-162
+title insertar_avl(raiz, clave, valor): inserción con reequilibrio
+
+legend top
+  |= Campo |= Detalle |
+  | Entrada | raiz: unique_ptr<NodoBST>&,  clave: K,  valor: V |
+  | Precondición | raiz es un AVL válido (o vacío) |
+  | Postcondición | La clave está en el árbol (si ya existía, solo se actualiza su valor) y el árbol sigue siendo AVL |
+  | Complejidad | O(log n): una rotación (simple o doble) como máximo |
+endlegend
+
+start
+:Entrada: raiz (referencia al unique_ptr), clave, valor<
+partition "Caso base" {
+  if ([1] raiz es nullptr ?) then (sí: hueco encontrado)
+    :[2] raiz = make_unique<NodoBST>(move(clave), move(valor));
+    note right: El nodo nuevo es hoja (altura 1) y nunca está desbalanceado.
+    #E2EFDA:[3] return;
+    stop
+  endif
+}
+partition "Descenso recursivo" {
+  if ([4] clave < raiz->clave ?) then (sí)
+    #FFF2CC:[5] insertar_avl(raiz->izq, move(clave), move(valor));
+    note right: Recursión por el subárbol IZQUIERDO.
+  elseif ([6] clave > raiz->clave ?) then (sí)
+    #FFF2CC:[7] insertar_avl(raiz->der, move(clave), move(valor));
+    note right: Recursión por el subárbol DERECHO.
+  else (clave repetida)
+    :[8] raiz->valor = move(valor);
+    note right: Solo se actualiza el valor: la forma del árbol no cambia.
+    #E2EFDA:[9] return (sin balancear);
+    stop
+  endif
+}
+partition "Reequilibrio al regresar" {
+  #FCE4D6:[10] balancear(raiz);
+  note right
+    Se ejecuta AL REGRESAR de cada llamada recursiva:
+    reequilibra los nodos del camino, de abajo hacia arriba.
+  end note
+}
+stop
+@enduml

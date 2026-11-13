@@ -1,0 +1,25 @@
+@startuml 27_test_P7_caso_LL
+skinparam shadowing false
+skinparam ArrowColor #1F4E79
+skinparam ActivityBorderColor #1F4E79
+skinparam ActivityBackgroundColor #EAF2FB
+skinparam ActivityDiamondBorderColor #BF9000
+skinparam ActivityDiamondBackgroundColor #FFF2CC
+skinparam NoteBackgroundColor #FFFBE6
+skinparam NoteBorderColor #BF9000
+skinparam ClassBackgroundColor #EAF2FB
+skinparam ClassBorderColor #1F4E79
+title test_P7_caso_LL() - insertar 30, 20, 10 (extra)
+
+start
+:r = nullptr;\ncontador_rotaciones = 0;
+:insertar 30, 20, 10 (bucle for);
+note right
+  Al insertar 10 el nodo 30 queda con fb = -2
+  y su hijo izquierdo tiene fb = -1 -> caso LL
+  -> rotar_derecha.
+end note
+:assert(r->clave == 20 && h(r) == 2 && contador_rotaciones == 1);
+:std::cout << "[P7 OK] caso_LL (extra)";
+stop
+@enduml

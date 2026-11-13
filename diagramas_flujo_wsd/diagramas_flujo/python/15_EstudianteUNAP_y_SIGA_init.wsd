@@ -1,0 +1,49 @@
+@startuml 15_EstudianteUNAP_y_SIGA_init
+skinparam shadowing false
+skinparam ActivityBackgroundColor #F4F7FB
+skinparam ActivityBorderColor #1F3A5F
+skinparam ArrowColor #1F3A5F
+skinparam NoteBackgroundColor #FFF8E1
+skinparam NoteBorderColor #C8553D
+skinparam ActivityDiamondBackgroundColor #FFF3E0
+skinparam ActivityDiamondBorderColor #1F3A5F
+skinparam PartitionBorderColor #1F3A5F
+skinparam ActivityStartColor #1F3A5F
+skinparam ActivityEndColor #1F3A5F
+
+title Creacion de EstudianteUNAP y de SIGA_AVL (avl_python.py lineas 175 a 186)
+
+start
+partition "EstudianteUNAP(codigo, nombre, escuela, promedio) lineas 175 a 180" {
+  :Linea 175: el decorador @dataclass\ngenera automaticamente ~_~_init~_~_, ~_~_repr~_~_ y ~_~_eq~_~_\na partir de los campos declarados;
+  :Se llama EstudianteUNAP('2026100001', 'Ana Quispe', 'Sistemas', 15.5);
+  #C8E6C9:Python crea un objeto vacio de la clase EstudianteUNAP;
+  #C8E6C9:~_~_init~_~_ generado asigna\nself.codigo, self.nombre, self.escuela y self.promedio\nlineas 177 a 180: son los campos con tipo;
+  note right
+    Las anotaciones de tipo (str, float) documentan los campos
+    pero Python no las verifica al ejecutar.
+  end note
+  :Devuelve la referencia al estudiante nuevo;
+}
+partition "SIGA_AVL() lineas 183 a 186" {
+  :Se llama SIGA_AVL()\nsin argumentos;
+  #C8E6C9:Python crea un objeto vacio de la clase SIGA_AVL;
+  partition "~_~_init~_~_(self) lineas 184 a 186" {
+    #C8E6C9:Linea 185: self.raiz = None\nel AVL empieza vacio;
+    #C8E6C9:Linea 186: self.total = 0\nnadie esta matriculado todavia;
+  }
+  :Devuelve la referencia al sistema SIGA;
+  note right
+    Aun no existe ningun Nodo.
+    El primer Nodo se creara al matricular
+    al primer estudiante.
+  end note
+}
+stop
+
+legend bottom right
+  Verde: se crea un objeto o una variable
+  Rojo: se destruye un objeto o una variable
+  Nota amarilla: estado de la memoria o explicacion
+endlegend
+@enduml

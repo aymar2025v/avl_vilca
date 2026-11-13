@@ -1,0 +1,76 @@
+@startuml 00a_simbologia_y_convenciones
+' ---------- Estilo técnico formal (esquinas rectas) ----------
+skinparam shadowing false
+skinparam roundCorner 0
+skinparam ActivityRoundCorner 0
+skinparam defaultFontName Arial
+skinparam ActivityFontName Consolas
+skinparam ActivityFontSize 12
+skinparam NoteFontSize 11
+skinparam ArrowColor #000000
+skinparam ArrowThickness 1
+skinparam ActivityBorderColor #000000
+skinparam ActivityBorderThickness 1.2
+skinparam ActivityBackgroundColor #F2F2F2
+skinparam ActivityDiamondBorderColor #000000
+skinparam ActivityDiamondBackgroundColor #FFFFFF
+skinparam ActivityStartColor #000000
+skinparam ActivityEndColor #000000
+skinparam NoteBackgroundColor #FFFFFF
+skinparam NoteBorderColor #595959
+skinparam NoteBorderThickness 1
+skinparam PartitionBorderColor #595959
+skinparam PartitionBackgroundColor #FFFFFF
+skinparam TitleFontSize 16
+skinparam TitleBorderThickness 1.5
+skinparam TitleBorderColor #000000
+skinparam TitleBorderRoundCorner 0
+skinparam LegendBackgroundColor #FFFFFF
+skinparam LegendBorderColor #000000
+skinparam LegendBorderThickness 1
+skinparam LegendBorderRoundCorner 0
+skinparam ClassBackgroundColor #FFFFFF
+skinparam ClassBorderColor #000000
+skinparam ClassAttributeIconSize 0
+skinparam PackageStyle rectangle
+skinparam PackageBorderColor #595959
+skinparam ComponentBackgroundColor #F2F2F2
+skinparam ComponentBorderColor #000000
+skinparam SequenceParticipantBackgroundColor #F2F2F2
+skinparam SequenceParticipantBorderColor #000000
+skinparam SequenceLifeLineBorderColor #595959
+skinparam SequenceGroupBackgroundColor #FFFFFF
+skinparam SequenceDividerBackgroundColor #D9D9D9
+skinparam FooterFontSize 9
+footer SIS210 - Algoritmos y Estructuras de Datos  ·  UNAP 2026-II  ·  Semana 10: Árbol AVL  ·  Fuente: todos los diagramas
+title Simbología y convenciones de los diagramas
+
+legend top
+  |= Elemento |= Significado |
+  | Rectángulo gris | Proceso o asignación |
+  | Rectángulo azul | Llamada a otra función |
+  | Rectángulo amarillo | Llamada recursiva |
+  | Rectángulo naranja | Rotación, desbalance o salida por error (false) |
+  | Rectángulo verde | return (fin de la función con resultado) |
+  | Rectángulo lila | Verificación (assert) en los tests |
+  | Paralelogramo | Entrada de datos / salida por pantalla (std::cout) |
+  | Rombo | Decisión (if) o condición de bucle (while) |
+  | [n] | Número de paso: sirve para seguir la explicación en la exposición |
+endlegend
+
+start
+:[1] Proceso / asignación;
+#DDEBF7:[2] Llamada a otra función;
+#FFF2CC:[3] Llamada recursiva;
+#FCE4D6:[4] Rotación / desbalance / error;
+#E4DFEC:[5] assert(condición);
+:[6] std::cout << resultado>
+if ([7] Condición ?) then (sí)
+  :Rama verdadera;
+else (no)
+  :Rama falsa;
+endif
+#E2EFDA:[8] return valor;
+note right: Las notas (recuadro blanco) explican el POR QUÉ de cada paso.
+stop
+@enduml

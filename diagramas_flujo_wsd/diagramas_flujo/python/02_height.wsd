@@ -1,0 +1,37 @@
+@startuml 02_height
+skinparam shadowing false
+skinparam ActivityBackgroundColor #F4F7FB
+skinparam ActivityBorderColor #1F3A5F
+skinparam ArrowColor #1F3A5F
+skinparam NoteBackgroundColor #FFF8E1
+skinparam NoteBorderColor #C8553D
+skinparam ActivityDiamondBackgroundColor #FFF3E0
+skinparam ActivityDiamondBorderColor #1F3A5F
+skinparam PartitionBorderColor #1F3A5F
+skinparam ActivityStartColor #1F3A5F
+skinparam ActivityEndColor #1F3A5F
+
+title height(n) - altura de un subarbol (avl_python.py lineas 31 a 33)
+
+start
+:Entrada: n\nun Nodo o None;
+if (n es un Nodo, es decir distinto de None ?) then (si)
+  :Se lee n.altura\nvalor ya guardado en el nodo\ncosto O(1);
+  :return n.altura;
+else (no, n es None)
+  :Un arbol vacio mide 0;
+  :return 0;
+endif
+note right
+  Se escribe en una sola linea:
+  return n.altura if n else 0
+  No se crea ni se destruye ningun objeto.
+end note
+stop
+
+legend bottom right
+  Verde: se crea un objeto o una variable
+  Rojo: se destruye un objeto o una variable
+  Nota amarilla: estado de la memoria o explicacion
+endlegend
+@enduml

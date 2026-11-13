@@ -1,0 +1,33 @@
+@startuml 03_contador_rotaciones
+skinparam shadowing false
+skinparam ArrowColor #1F4E79
+skinparam ActivityBorderColor #1F4E79
+skinparam ActivityBackgroundColor #EAF2FB
+skinparam ActivityDiamondBorderColor #BF9000
+skinparam ActivityDiamondBackgroundColor #FFF2CC
+skinparam NoteBackgroundColor #FFFBE6
+skinparam NoteBorderColor #BF9000
+skinparam ClassBackgroundColor #EAF2FB
+skinparam ClassBorderColor #1F4E79
+title inline int contador_rotaciones = 0  (variable global)
+
+start
+:Definición en avl.h:\ninline int contador_rotaciones = 0;
+note right
+  "inline" (C++17) permite definir la variable en un header
+  incluido por varios .cpp sin error de definición múltiple.
+  Existe UNA sola copia en todo el programa.
+end note
+fork
+  :rotar_derecha(z)\n++contador_rotaciones;
+fork again
+  :rotar_izquierda(z)\n++contador_rotaciones;
+end fork
+:Una rotación simple = +1\nUna rotación doble (LR o RL) = +2;
+:Los tests P1, P2, P7, P8 hacen\ncontador_rotaciones = 0 antes de insertar\ny luego assert(contador_rotaciones == N);
+note right
+  RR / LL -> 1 rotación
+  LR / RL -> 2 rotaciones
+end note
+stop
+@enduml

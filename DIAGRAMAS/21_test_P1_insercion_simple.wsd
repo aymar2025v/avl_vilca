@@ -1,0 +1,32 @@
+@startuml 21_test_P1_insercion_simple
+skinparam shadowing false
+skinparam ArrowColor #1F4E79
+skinparam ActivityBorderColor #1F4E79
+skinparam ActivityBackgroundColor #EAF2FB
+skinparam ActivityDiamondBorderColor #BF9000
+skinparam ActivityDiamondBackgroundColor #FFF2CC
+skinparam NoteBackgroundColor #FFFBE6
+skinparam NoteBorderColor #BF9000
+skinparam ClassBackgroundColor #EAF2FB
+skinparam ClassBorderColor #1F4E79
+title test_P1_insercion_simple() - insertar 10, 20, 30 (caso RR)
+
+start
+:std::unique_ptr<NodoBST<int,int>> r = nullptr;\ncontador_rotaciones = 0;
+:insertar_avl(r, 10, 10);
+:insertar_avl(r, 20, 20);
+:insertar_avl(r, 30, 30);
+note right
+  Al insertar 30 el nodo 10 queda con fb = +2 -> caso RR
+  -> rotar_izquierda.
+  Antes:  10 -> 20 -> 30 (lista, h = 3)
+  Después: 20 con hijos 10 y 30 (h = 2)
+end note
+:assert(h(r) == 2);
+:assert(r->clave == 20);
+:assert(contador_rotaciones == 1);
+note right: una sola rotación simple
+:std::cout << "[P1 OK] ..." << contador_rotaciones;
+:imprimir_arbol(r);
+stop
+@enduml

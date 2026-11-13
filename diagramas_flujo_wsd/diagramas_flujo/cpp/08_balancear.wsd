@@ -1,0 +1,69 @@
+@startuml 08_balancear
+skinparam shadowing false
+skinparam ActivityBackgroundColor #F4F7FB
+skinparam ActivityBorderColor #1F3A5F
+skinparam ArrowColor #1F3A5F
+skinparam NoteBackgroundColor #FFF8E1
+skinparam NoteBorderColor #C8553D
+skinparam ActivityDiamondBackgroundColor #FFF3E0
+skinparam ActivityDiamondBorderColor #1F3A5F
+skinparam PartitionBorderColor #1F3A5F
+skinparam ActivityStartColor #1F3A5F
+skinparam ActivityEndColor #1F3A5F
+
+title balancear(n) - reequilibra un nodo con los 4 casos (avl.h lineas 109 a 124)
+
+start
+:Entrada: n\nreferencia al unique_ptr del nodo que se revisa;
+note right
+  Se llama al volver de la recursion
+  desde insertar_avl (linea 145) y eliminar_avl (linea 203).
+  Revisa un solo nodo, el que corresponde a esa llamada.
+end note
+:Linea 111: actualizar_altura(n)\nlas alturas de los hijos ya estan correctas;
+#C8E6C9:Linea 112: int fb = factor_balance(n)\nse crea la variable local fb;
+if (Linea 114: fb mayor que 1 ?) then (si, pesado a la derecha)
+  #C8E6C9:Linea 115: factor_balance(n->der)\nse calcula el balance del hijo derecho;
+  if (hijo derecho con fb menor que 0 ?) then (si)
+    :Caso RL (derecha-izquierda)\nel exceso esta en el nieto izquierdo del hijo derecho;
+    :Linea 116: rotar_derecha(n->der)\nprimera rotacion: convierte RL en RR\nver diagrama 06_rotar_derecha;
+  else (no, hijo derecho con fb mayor o igual a 0)
+    :Caso RR (derecha-derecha)\nno hace falta rotar el hijo;
+  endif
+  :Linea 117: rotar_izquierda(n)\nsegunda rotacion (RL) o unica rotacion (RR)\nver diagrama 07_rotar_izquierda;
+  note right
+    RR: 1 rotacion simple.
+    RL: 2 rotaciones simples = 1 rotacion doble.
+    Ejemplos: RR con 10, 20, 30. RL con 10, 30, 20.
+  end note
+elseif (Linea 119: fb menor que -1 ?) then (si, pesado a la izquierda)
+  #C8E6C9:Linea 120: factor_balance(n->izq)\nse calcula el balance del hijo izquierdo;
+  if (hijo izquierdo con fb mayor que 0 ?) then (si)
+    :Caso LR (izquierda-derecha)\nel exceso esta en el nieto derecho del hijo izquierdo;
+    :Linea 121: rotar_izquierda(n->izq)\nprimera rotacion: convierte LR en LL\nver diagrama 07_rotar_izquierda;
+  else (no, hijo izquierdo con fb menor o igual a 0)
+    :Caso LL (izquierda-izquierda)\nno hace falta rotar el hijo;
+  endif
+  :Linea 122: rotar_derecha(n)\nsegunda rotacion (LR) o unica rotacion (LL)\nver diagrama 06_rotar_derecha;
+  note right
+    LL: 1 rotacion simple.
+    LR: 2 rotaciones simples = 1 rotacion doble.
+    Ejemplos: LL con 30, 20, 10. LR con 30, 10, 20.
+  end note
+else (fb entre -1 y 1)
+  :El nodo ya cumple el invariante AVL\nno se hace nada;
+endif
+#FFCDD2:Termina la funcion\nla variable local fb se destruye;
+note right
+  Los signos mayor o igual y menor o igual (no estrictos)
+  son necesarios en la eliminacion, donde el hijo pesado
+  puede tener fb = 0 y entonces basta una rotacion simple.
+end note
+stop
+
+legend bottom right
+  Verde: se crea un objeto o una variable
+  Rojo: se destruye un objeto o una variable
+  Nota amarilla: estado de la memoria o explicacion
+endlegend
+@enduml

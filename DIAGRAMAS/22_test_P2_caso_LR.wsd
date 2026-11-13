@@ -1,0 +1,32 @@
+@startuml 22_test_P2_caso_LR
+skinparam shadowing false
+skinparam ArrowColor #1F4E79
+skinparam ActivityBorderColor #1F4E79
+skinparam ActivityBackgroundColor #EAF2FB
+skinparam ActivityDiamondBorderColor #BF9000
+skinparam ActivityDiamondBackgroundColor #FFF2CC
+skinparam NoteBackgroundColor #FFFBE6
+skinparam NoteBorderColor #BF9000
+skinparam ClassBackgroundColor #EAF2FB
+skinparam ClassBorderColor #1F4E79
+title test_P2_caso_LR() - insertar 30, 10, 20 (caso LR)
+
+start
+:r = nullptr;\ncontador_rotaciones = 0;
+:insertar_avl(r, 30, 30);
+:insertar_avl(r, 10, 10);
+:insertar_avl(r, 20, 20);
+note right
+  Al insertar 20 el nodo 30 queda con fb = -2
+  y su hijo izquierdo (10) tiene fb = +1 -> caso LR.
+  1) rotar_izquierda(n->izq)   2) rotar_derecha(n)
+  Resultado: 20 con hijos 10 y 30.
+end note
+:assert(r->clave == 20);
+:assert(h(r) == 2);
+:assert(contador_rotaciones == 2);
+note right: rotación doble = 2 rotaciones simples
+:std::cout << "[P2 OK] ...";
+:imprimir_arbol(r);
+stop
+@enduml

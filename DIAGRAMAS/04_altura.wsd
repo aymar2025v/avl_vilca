@@ -1,0 +1,24 @@
+@startuml 04_altura
+skinparam shadowing false
+skinparam ArrowColor #1F4E79
+skinparam ActivityBorderColor #1F4E79
+skinparam ActivityBackgroundColor #EAF2FB
+skinparam ActivityDiamondBorderColor #BF9000
+skinparam ActivityDiamondBackgroundColor #FFF2CC
+skinparam NoteBackgroundColor #FFFBE6
+skinparam NoteBorderColor #BF9000
+skinparam ClassBackgroundColor #EAF2FB
+skinparam ClassBorderColor #1F4E79
+title altura(n) - altura de un subárbol
+
+start
+:Entrada: n (const unique_ptr<NodoBST>&)\nreferencia constante: no se transfiere la propiedad;
+if (n es nullptr ?) then (sí)
+  #D5F0D5:return 0;
+  note right: árbol vacío tiene altura 0
+else (no)
+  #D5F0D5:return n->altura;
+  note right: O(1): la altura ya está guardada en el nodo, no se recalcula
+endif
+stop
+@enduml

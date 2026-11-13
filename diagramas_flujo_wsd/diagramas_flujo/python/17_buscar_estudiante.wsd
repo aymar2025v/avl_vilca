@@ -1,0 +1,38 @@
+@startuml 17_buscar_estudiante
+skinparam shadowing false
+skinparam ActivityBackgroundColor #F4F7FB
+skinparam ActivityBorderColor #1F3A5F
+skinparam ArrowColor #1F3A5F
+skinparam NoteBackgroundColor #FFF8E1
+skinparam NoteBorderColor #C8553D
+skinparam ActivityDiamondBackgroundColor #FFF3E0
+skinparam ActivityDiamondBorderColor #1F3A5F
+skinparam PartitionBorderColor #1F3A5F
+skinparam ActivityStartColor #1F3A5F
+skinparam ActivityEndColor #1F3A5F
+
+title SIGA_AVL.buscar_estudiante(codigo) - busca por codigo (avl_python.py lineas 200 a 207)
+
+start
+:Entrada: self y codigo (texto);
+#C8E6C9:Linea 201: t0 = perf_counter()\ninstante inicial;
+#C8E6C9:Linea 202: nodo = buscar(self.raiz, codigo)\nse crea nodo con el Nodo encontrado o None\nver diagrama 09_buscar;
+#C8E6C9:Linea 203: t1 = perf_counter()\ninstante final;
+if (Linea 204: nodo no es None ?) then (si, se encontro)
+  :Linea 205: print Encontrado con nodo.valor\nque es el EstudianteUNAP guardado\ny el tiempo (t1 - t0) por 1e6 en microsegundos;
+else (no, no existe)
+  :Linea 207: print Codigo no encontrado\ncon el tiempo (t1 - t0) por 1e6 en microsegundos;
+endif
+note right
+  La busqueda recorre a lo sumo la altura del arbol.
+  Con 11 estudiantes la altura es 4: maximo 4 comparaciones.
+end note
+#FFCDD2:Al terminar, t0, t1 y nodo desaparecen\nel arbol no se modifica;
+stop
+
+legend bottom right
+  Verde: se crea un objeto o una variable
+  Rojo: se destruye un objeto o una variable
+  Nota amarilla: estado de la memoria o explicacion
+endlegend
+@enduml

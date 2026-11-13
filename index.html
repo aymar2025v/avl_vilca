@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>rotar_derecha(z) — 9 fotogramas</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute;overflow:hidden" aria-hidden="true">
+  <defs>
+    <marker id="arrowOrange" viewBox="0 0 10 10" refX="9" refY="5"
+            markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#fb923c"/>
+    </marker>
+    <marker id="arrowPurple" viewBox="0 0 10 10" refX="9" refY="5"
+            markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#a78bfa"/>
+    </marker>
+  </defs>
+</svg>
+
+<div class="app">
+  <div class="toolbar">
+    <button class="btn" id="prevBtn" onclick="prev()">← Anterior</button>
+    <button class="btn" id="nextBtn" onclick="next()">Siguiente →</button>
+    <button class="btn btn-play" id="playBtn" onclick="togglePlay()">
+      <span class="play-icon" id="playIcon">▶</span>
+      <span id="playLabel">Reproducir</span>
+    </button>
+    <input type="range" class="progress" id="progress" min="0" max="8" value="0"
+           oninput="jumpTo(+this.value)">
+    <span class="frame-counter">Fotograma <span id="frameNum">1</span> ⋯ <span id="frameTotal">9</span></span>
+  </div>
+
+  <div class="code-panel" id="codePanel"></div>
+  <div class="tree-panel" id="treePanel"></div>
+  <div id="notePanel"></div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>

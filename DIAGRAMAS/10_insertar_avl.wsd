@@ -1,0 +1,40 @@
+@startuml 10_insertar_avl
+skinparam shadowing false
+skinparam ArrowColor #1F4E79
+skinparam ActivityBorderColor #1F4E79
+skinparam ActivityBackgroundColor #EAF2FB
+skinparam ActivityDiamondBorderColor #BF9000
+skinparam ActivityDiamondBackgroundColor #FFF2CC
+skinparam NoteBackgroundColor #FFFBE6
+skinparam NoteBorderColor #BF9000
+skinparam ClassBackgroundColor #EAF2FB
+skinparam ClassBorderColor #1F4E79
+title insertar_avl(raiz, clave, valor) - inserción con reequilibrio
+
+start
+:Entrada: raiz (unique_ptr&), clave, valor;
+if (raiz es nullptr ?) then (sí: hueco encontrado)
+  :raiz = make_unique<NodoBST>(move(clave), move(valor));
+  note right: el nodo nuevo es hoja (altura 1) y nunca está desbalanceado
+  #D5F0D5:return;
+  stop
+endif
+if (clave < raiz->clave ?) then (sí)
+  #FFF0B3:insertar_avl(raiz->izq, move(clave), move(valor));
+  note right: recursión por el subárbol IZQUIERDO
+elseif (clave > raiz->clave ?) then (sí)
+  #FFF0B3:insertar_avl(raiz->der, move(clave), move(valor));
+  note right: recursión por el subárbol DERECHO
+else (clave repetida)
+  :raiz->valor = move(valor);
+  note right: solo se actualiza el valor, la forma del árbol no cambia
+  #D5F0D5:return (sin balancear);
+  stop
+endif
+#FADBD8:balancear(raiz);
+note right
+  Se ejecuta AL REGRESAR de la recursión:
+  reequilibra cada nodo del camino, de abajo hacia arriba.
+end note
+stop
+@enduml

@@ -1,0 +1,38 @@
+@startuml 14_ejecutar_experimento
+skinparam shadowing false
+skinparam ActivityBackgroundColor #F4F7FB
+skinparam ActivityBorderColor #1F3A5F
+skinparam ArrowColor #1F3A5F
+skinparam NoteBackgroundColor #FFF8E1
+skinparam NoteBorderColor #C8553D
+skinparam ActivityDiamondBackgroundColor #FFF3E0
+skinparam ActivityDiamondBorderColor #1F3A5F
+skinparam PartitionBorderColor #1F3A5F
+skinparam ActivityStartColor #1F3A5F
+skinparam ActivityEndColor #1F3A5F
+
+title ejecutar_experimento() - genera la tabla de la Actividad 2B (avl_python.py lineas 159 a 169)
+
+start
+:Sin parametros;
+:Linea 161: random.seed(2026)\nsemilla fija: los numeros aleatorios se repiten\nen cada ejecucion;
+:Lineas 162 y 163: print del encabezado de la tabla\ncolumnas n, BST (ord), AVL (ord), Teorico, BST (rnd), AVL (rnd);
+:Linea 164: print de una linea de 68 guiones;
+while (Linea 165: hay mas valores de n en 100, 500, 1000, 5000, 10000 ?) is (si)
+  #C8E6C9:Linea 166: experimento(n, 'ordered')\nse crean h_bst_o, h_avl_o y teo\nver diagrama 13_experimento;
+  #C8E6C9:Linea 167: experimento(n, 'random')\nse crean h_bst_r y h_avl_r\nel limite teorico se descarta con el nombre _;
+  :Lineas 168 y 169: print de la fila\nn, BST ordenado, AVL ordenado, teorico, BST aleatorio, AVL aleatorio;
+endwhile (no, ya se imprimieron las 5 filas)
+note right
+  Resultado (salida real):
+  n = 10000: BST ord 10000, AVL ord 14, teorico 19,
+  BST rnd 29, AVL rnd 16.
+end note
+stop
+
+legend bottom right
+  Verde: se crea un objeto o una variable
+  Rojo: se destruye un objeto o una variable
+  Nota amarilla: estado de la memoria o explicacion
+endlegend
+@enduml

@@ -1,0 +1,43 @@
+@startuml 09_buscar
+skinparam shadowing false
+skinparam ActivityBackgroundColor #F4F7FB
+skinparam ActivityBorderColor #1F3A5F
+skinparam ArrowColor #1F3A5F
+skinparam NoteBackgroundColor #FFF8E1
+skinparam NoteBorderColor #C8553D
+skinparam ActivityDiamondBackgroundColor #FFF3E0
+skinparam ActivityDiamondBorderColor #1F3A5F
+skinparam PartitionBorderColor #1F3A5F
+skinparam ActivityStartColor #1F3A5F
+skinparam ActivityEndColor #1F3A5F
+
+title buscar(raiz, clave) - busqueda iterativa (avl_python.py lineas 95 a 101)
+
+start
+:Entrada: raiz (un Nodo o None) y clave a buscar;
+note right
+  A diferencia de la version C++, esta es ITERATIVA:
+  usa un ciclo en vez de recursion.
+  Reutiliza el parametro raiz como puntero que va bajando.
+  No se crea ni se destruye ningun objeto.
+end note
+while (Linea 97: raiz is not None ?) is (si)
+  if (Linea 98: clave == raiz.clave ?) then (si)
+    :Linea 99: return raiz\nse devuelve el nodo encontrado;
+    stop
+  else (no)
+  endif
+  :Linea 100: raiz = raiz.izq si clave menor que raiz.clave\nsi no raiz = raiz.der\nbaja un nivel por la rama que corresponde;
+endwhile (no, se llego a un hueco)
+:Linea 101: return None\nla clave no esta en el arbol;
+note right
+  El ciclo hace a lo sumo altura iteraciones: O(log n) en un AVL.
+end note
+stop
+
+legend bottom right
+  Verde: se crea un objeto o una variable
+  Rojo: se destruye un objeto o una variable
+  Nota amarilla: estado de la memoria o explicacion
+endlegend
+@enduml

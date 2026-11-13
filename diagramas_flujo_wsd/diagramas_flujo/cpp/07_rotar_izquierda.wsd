@@ -1,0 +1,77 @@
+@startuml 07_rotar_izquierda
+skinparam shadowing false
+skinparam ActivityBackgroundColor #F4F7FB
+skinparam ActivityBorderColor #1F3A5F
+skinparam ArrowColor #1F3A5F
+skinparam NoteBackgroundColor #FFF8E1
+skinparam NoteBorderColor #C8553D
+skinparam ActivityDiamondBackgroundColor #FFF3E0
+skinparam ActivityDiamondBorderColor #1F3A5F
+skinparam PartitionBorderColor #1F3A5F
+skinparam ActivityStartColor #1F3A5F
+skinparam ActivityEndColor #1F3A5F
+
+title rotar_izquierda(z) - rotacion simple a la izquierda, caso RR (avl.h lineas 88 a 97)
+
+start
+:Entrada: z\nreferencia al unique_ptr que apunta al nodo desbalanceado;
+note right
+  Precondicion: z != nullptr y z->der != nullptr.
+  balancear solo llama aqui cuando fb de z es mayor que 1.
+  Ejemplo para seguir el flujo:
+  z = 10, y = 20, x = 30
+  (20 es hijo derecho de 10 y 30 es hijo derecho de 20)
+  T2 y T1 son subarboles vacios en este ejemplo.
+  Es el espejo exacto de rotar_derecha.
+end note
+partition "Linea 90: auto y = std::move(z->der)" {
+  #C8E6C9:Se crea la variable local y\nunique_ptr que vive solo dentro de la funcion;
+  :y toma el nodo 20 con todo su subarbol\nz->der queda en nullptr;
+}
+partition "Linea 91: z->der = std::move(y->izq)" {
+  :El subarbol T2 (hijo izquierdo de y) pasa a z->der;
+  :y->izq queda en nullptr;
+  note right
+    En el ejemplo T2 esta vacio: z->der sigue en nullptr.
+    Si T2 existiera, su orden inorden seria
+    mayor que z y menor que y.
+  end note
+}
+partition "Linea 92: actualizar_altura(z)" {
+  :Se recalcula la altura del nodo 10 (el que BAJA)\nver diagrama 05_actualizar_altura;
+  note right
+    Con T2 vacio el nodo 10 queda como hoja:
+    altura 1 + max(0, 0) = 1.
+  end note
+}
+partition "Linea 93: y->izq = std::move(z)" {
+  :El nodo 10 pasa a ser hijo izquierdo de 20;
+  :z (la referencia) queda en nullptr un instante;
+}
+partition "Linea 94: z = std::move(y)" {
+  :El enlace z recibe el nodo 20\n20 ocupa el lugar que tenia 10 en el arbol;
+  :y queda en nullptr;
+}
+partition "Linea 95: actualizar_altura(z)" {
+  :Se recalcula la altura del nodo 20 (el que SUBE)\nhijos 10 y 30 con altura 1 cada uno;
+  note right
+    La altura de 20 es 1 + max(1, 1) = 2
+    y su factor de balance queda en 0.
+  end note
+}
+partition "Linea 96: ++contador_rotaciones" {
+  :Se incrementa el contador global de rotaciones;
+}
+#FFCDD2:Al salir de la funcion se destruye la variable local y\nesta vacia: no libera ningun nodo;
+note right
+  Ningun nodo se crea ni se destruye.
+  Solo cambian 3 enlaces y se recalculan 2 alturas.
+end note
+stop
+
+legend bottom right
+  Verde: se crea un objeto o una variable
+  Rojo: se destruye un objeto o una variable
+  Nota amarilla: estado de la memoria o explicacion
+endlegend
+@enduml

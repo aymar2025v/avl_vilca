@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simulador AVL – Debugger Visual v9 (Vue)</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<div id="app" v-cloak>
+
+  <!-- ═════════ CABECERA: operaciones + reproductor + descripción ═════════ -->
+  <header id="header">
+    <div class="toolbar">
+      <h1 class="brand">Simulador <span>AVL</span><small>v9 · Vue</small></h1>
+
+      <div class="key-box">
+        <input ref="keyInput" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" v-model="key"
+               placeholder="Clave o lista: 10,20,30 · 1..15" title="Un entero, una lista (10,20,30) o un rango (1..15)"
+               :class="{ invalid: error }" @keydown.enter="onEnter($event, groups[0].ops[0])">
+        <input type="text" class="val-input" v-model="val" maxlength="8" placeholder="Valor…" title="Valor asociado (opcional; por defecto = clave). Solo con una clave" @keydown.enter="onEnter($event, groups[0].ops[0])">
+        <small class="op-error" v-if="error">{{ error }}</small>
+      </div>
+
+      <div class="group" v-for="g in groups" :key="g.title">
+        <span class="group-title">{{ g.title }}</span>
+        <button v-for="op in g.ops" :key="op.label" class="btn" :class="op.cls" :title="op.hint"
+                :disabled="op.key && key === ''" @click="exec(op)">{{ op.label }}</button>
+      </div>
+
+      <div class="group push">
+        <select class="case-select" @change="runCase" title="Carga un caso de avl_main.cpp (P1–P8) y lo ejecuta paso a paso">
+          <option value="" selected>📋 Casos de la guía…</option>
+          <option v-for="c in cases" :key="c.id" :value="c.id">{{ c.title }}</option>
+        </select>
+        <button class="btn btn-amber" @click="example" title="Carga un árbol de 7 nodos">📚 Ejemplo</button>
+        <button class="btn btn-slate" @click="reset" title="Vaciar el árbol">🔄 Reiniciar</button>
+      </div>
+    </div>
+
+    <div id="step-bar">
+      <button class="btn-player" :disabled="!total" @click="pause(); go(0)" title="Primer paso">⏮</button>
+      <button class="btn-player" :disabled="!total" @click="step(-1)" title="Paso anterior (←)">◀</button>
+      <button class="btn-player btn-player-primary" :disabled="total < 2" @click="togglePlay" title="Play / Pausa (Espacio)">{{ playing ? '⏸' : '▶' }}</button>
+      <button class="btn-player" :disabled="!total" @click="step(1)" title="Entrar / paso siguiente (→)">▶</button>
+      <button class="btn-player txt" :disabled="!total" @click="stepOver" title="Saltar: pasa por encima de la llamada actual (↓)">Saltar ↓</button>
+      <button class="btn-player txt" :disabled="!total" @click="stepOut" title="Salir: termina la función actual (↑)">Salir ↑</button>
+      <button class="btn-player" :disabled="!total" @click="pause(); go(total - 1)" title="Último paso">⏭</button>
+      <button class="btn-player" :disabled="total < 2" @click="nextRot" title="Ir a la siguiente rotación">↻</button>
+      <input type="range" class="timeline" min="0" :max="Math.max(total - 1, 0)" :value="idx"
+             :disabled="total < 2" @input="pause(); go(+$event.target.value)">
+      <label class="detail-toggle" title="Mostrar los pasos dentro de actualizar_altura() y factor_balance()">
+        <input type="checkbox" :checked="detail" @change="toggleDetail"> detalle
+      </label>
+      <span class="step-count">{{ total ? idx + 1 : 0 }} / {{ total }}</span>
+      <label class="speed">Lento <input type="range" min="150" max="1500" step="50" v-model.number="speed"> Rápido</label>
+    </div>
+
+    <div id="step-desc-bar">
+      <span v-if="meta" class="desc-fn-badge" :class="meta.badge">{{ meta.label }}</span>
+      <span v-if="debug && debug.caso" class="case-chip">Caso {{ debug.caso }}</span>
+      <span :key="idx" class="desc-anim">{{ debug ? debug.descripcion : 'Escribe una clave y pulsa Insertar, o carga el ejemplo, para empezar.' }}</span>
+      <span v-if="frame" class="rot-chip" title="contador_rotaciones">↻ {{ frame.rot }}</span>
+      <span v-if="output.length" class="out-chip">Salida: {{ output.join(' → ') }}</span>
+    </div>
+    <div class="info-bar" v-if="info" :class="info.ok ? 'ok' : 'bad'">
+      <span class="info-text">{{ info.text }}</span>
+      <button class="info-close" @click="info = null" title="Cerrar">✕</button>
+    </div>
+    <div class="stack-bar" v-if="debug && debug.stack.length"><span class="stack-lbl">pila</span><span v-for="(c, i) in debug.stack" :key="i" class="stack-item" :class="{ top: i === debug.stack.length - 1 }">{{ c }}</span></div>
+  </header>
+
+  <main ref="mainEl" :style="{ '--code-w': codeW + 'px' }" :class="{ splitting }">
+    <!-- ═════════ IZQUIERDA: código C++ de la función activa ═════════ -->
+    <aside id="code-container">
+      <div class="code-tabs">
+        <div v-for="t in tabs" :key="t" class="code-tab" :class="{ active: t === file, running: debug && t === debug.file }" @click="pinned = t">{{ tabLabel(t) }}</div>
+      </div>
+      <div class="bind-bar" v-if="debug && file === debug.file">
+        <span class="bind-title">en esta llamada</span>
+        <template v-if="bindList.length">
+          <span v-for="b in bindList" :key="b.v" class="bind"><code>{{ b.v }}</code><i>▸</i><span v-html="b.html"></span></span>
+        </template>
+        <span v-else class="bind-none">sin nodos</span>
+        <label class="names-toggle" title="Mostrar el código con los nombres de los nodos (B->izq) o con los nombres originales (raiz->izq)"><input type="checkbox" v-model="showNames"> nombres</label>
+      </div>
+      <div id="code-panel">
+        <div v-if="!lines.length" class="cmt" style="padding:12px 14px">// Esperando operación…</div>
+        <div v-for="(l, i) in lines" :key="file + i" class="cl" :class="{ active: activeLines.includes(i) }">
+          <span class="cl-num">{{ i + 1 }}</span><span class="cl-code" v-html="l"></span>
+        </div>
+      </div>
+    </aside>
+    <div class="splitter" :class="{ dragging: splitting }" role="separator" aria-orientation="vertical" tabindex="0"
+         aria-label="Ancho del panel de código" title="Arrastra para cambiar el ancho · ←/→ ajustan · doble clic o Inicio restablecen"
+         @pointerdown="splitDown" @pointermove="splitMove" @pointerup="splitUp" @pointercancel="splitUp"
+         @keydown="splitKey" @dblclick="splitReset"></div>
+
+    <!-- ═════════ DERECHA: árbol + variables locales ═════════ -->
+    <section class="stage">
+      <div id="tree-viewport" ref="viewport" @wheel.prevent="onWheel" @mousedown="onDown">
+        <div id="tree-canvas" :style="canvasStyle">
+          <svg class="lines" width="1" height="1">
+            <defs>
+              <marker id="ah-normal" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto"><path d="M1,1.5 L13,7 L1,12.5 L4.5,7 z" fill="#4f9cf9"/></marker>
+              <marker id="ah-hot" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto"><path d="M1,1.5 L13,7 L1,12.5 L4.5,7 z" fill="#fbbf24"/></marker>
+              <marker id="dot-rotation" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="8" refX="4" refY="4"><circle cx="4" cy="4" r="3" fill="#a78bfa"/></marker>
+              <marker id="ah-rotation" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto"><path d="M1,1.5 L13,7 L1,12.5 L4.5,7 z" fill="#a78bfa"/></marker>
+            </defs>
+            <g class="float-box" v-for="b in scene.boxes" :key="b.name">
+              <rect :x="b.x" :y="b.y" :width="b.w" :height="b.h" rx="10" fill="rgba(10,16,27,.75)" stroke="#4f9cf9" stroke-width="1.5" stroke-dasharray="7 4"/>
+              <text :x="b.x + 12" :y="b.y + 20" fill="#4f9cf9" font-size="11" font-weight="700">auto {{ b.name }}</text>
+            </g>
+            <path v-if="drawn.arc" :d="drawn.arc" class="rotation-arc fade" marker-start="url(#dot-rotation)" marker-end="url(#ah-rotation)"/>
+            <path v-for="e in drawn.edges" :key="e.id" :d="e.d" :style="{ opacity: e.o }" :class="[e.rot ? 'arrow-rotation' : 'arrow-normal', e.hot || e.moved ? 'hot' : '']"
+                  :marker-end="e.hot || e.moved ? 'url(#ah-hot)' : e.rot ? 'url(#ah-rotation)' : 'url(#ah-normal)'"/>
+          </svg>
+
+          <div v-for="n in drawn.nodes" :key="n.id" class="avl-node-wrapper"
+               :style="{ left: n.x + 'px', top: n.y + 'px', width: '150px', opacity: n.o }">
+            <div class="var-chips" v-if="n.vars.length"><span v-for="v in n.vars" :key="v" class="var-chip">{{ v }}</span></div>
+            <div class="node-badge">
+              <span v-if="n.isRoot" class="root-tag" title="Es la raíz del árbol ahora mismo (cambia con las rotaciones)">raíz</span>
+              <span class="np" :style="{ '--h': n.hue }" :title="'Nodo ' + n.name">{{ n.name }}</span>
+              <span style="color:#60a5fa;font-size:10px">h:<b>{{ n.height }}</b></span>
+              <span class="badge" :class="fbClass(n.fb)" style="padding:0 5px;font-size:10px">fb:{{ n.fb }}</span>
+            </div>
+            <div class="node-body" :class="[n.floating ? 'floating' : '', hl(n)]" :style="{ '--nb': 'hsl(' + n.hue + ' 45% 38%)' }">
+              <div class="node-slot node-slot-left"><div v-if="n.left" class="ptr-dot has-child"></div><span v-else class="null-txt">nullptr</span><span class="node-slot-label">izq</span></div>
+              <div class="node-center">
+                <span class="node-key">{{ n.key }}</span>
+                <span class="node-val" :title="n.value"><i>val</i> {{ n.value }}</span>
+              </div>
+              <div class="node-slot node-slot-right"><div v-if="n.right" class="ptr-dot has-child"></div><span v-else class="null-txt">nullptr</span><span class="node-slot-label">der</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div id="tree-hint" v-if="!scene.nodes.length"><p>Árbol vacío — inserta una clave para comenzar</p></div>
+
+        <div id="zoom-controls">
+          <button class="zoom-btn" @click="zoomBtn(1.2)" title="Acercar">+</button>
+          <button class="zoom-btn" @click="zoomBtn(.83)" title="Alejar">−</button>
+          <button class="zoom-btn" @click="fit" title="Ajustar a la pantalla">⤢</button>
+          <span id="zoom-label">{{ Math.round(view.scale * 100) }}%</span>
+        </div>
+      </div>
+
+      <div class="mem-wrap">
+        <span class="mem-title">Variables locales</span>
+        <div id="memory-panel">
+          <div class="mem-var" v-for="(v, name) in (frame ? frame.memoria : {})" :key="name">
+            <span class="mem-type">{{ v.plain ? 'K' : 'auto' }}</span><span class="mem-name">{{ name }}</span><span class="mem-eq">=</span>
+            <template v-if="v.slot !== undefined"><span class="mem-val">nullptr</span><span class="np slot" :title="'hueco ' + v.slot">{{ v.slot }}</span></template>
+            <template v-else-if="v.plain"><span class="mem-val">{{ v.key }}</span></template>
+            <template v-else><span class="np" :style="{ '--h': v.hue }">{{ v.name }}</span><span class="mem-val">clave {{ v.key }}</span></template>
+          </div>
+          <span v-if="!frame || !Object.keys(frame.memoria).length" class="cmt">// sin variables activas…</span>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ═════════ Ventanita: nombre obligatorio de cada nodo nuevo ═════════ -->
+  <div class="modal-back" v-if="pending" @keydown.esc="cancelNames" @mousedown.self="cancelNames">
+    <form class="modal" role="dialog" aria-modal="true" aria-labelledby="nm-title" @submit.prevent="confirmNames">
+      <h2 id="nm-title">Nombra {{ pending.rows.length === 1 ? 'el nodo nuevo' : 'los ' + pending.rows.length + ' nodos nuevos' }}</h2>
+      <p class="modal-sub">Cada nodo necesita un nombre único. Lo verás en el árbol y en el código C++ (por ejemplo <code>B->izq</code> en vez de <code>raiz->izq</code>), así sabes siempre en qué nodo estás.</p>
+      <p class="modal-note" v-if="pending.existing.length">Ya existen (solo se actualiza su valor): {{ pending.existing.join(', ') }}</p>
+      <div class="name-list">
+        <label class="name-row" v-for="(r, i) in pending.rows" :key="r.key" :class="{ bad: nameErrors[i] }">
+          <span class="name-key">clave <b>{{ r.key }}</b></span><i>→</i>
+          <input type="text" v-model="r.name" :maxlength="NAME_MAX" autocomplete="off" spellcheck="false" placeholder="Nombre…"
+                 @keydown.enter.prevent="nameEnter($event, i)">
+          <small class="name-err">{{ nameErrors[i] }}</small>
+        </label>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-slate" @click="fillNames" title="Vuelve a poner A, B, C… en todos">↺ A, B, C…</button>
+        <span class="grow"></span>
+        <button type="button" class="btn btn-slate" @click="cancelNames">Cancelar</button>
+        <button type="submit" class="btn btn-blue" :disabled="!namesOk">Insertar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script type="module" src="js/main.js"></script>
+</body>
+</html>

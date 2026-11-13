@@ -1,0 +1,44 @@
+@startuml 18_listar_ordenado
+skinparam shadowing false
+skinparam ActivityBackgroundColor #F4F7FB
+skinparam ActivityBorderColor #1F3A5F
+skinparam ArrowColor #1F3A5F
+skinparam NoteBackgroundColor #FFF8E1
+skinparam NoteBorderColor #C8553D
+skinparam ActivityDiamondBackgroundColor #FFF3E0
+skinparam ActivityDiamondBorderColor #1F3A5F
+skinparam PartitionBorderColor #1F3A5F
+skinparam ActivityStartColor #1F3A5F
+skinparam ActivityEndColor #1F3A5F
+
+title SIGA_AVL.listar_ordenado() - lista en orden por codigo (avl_python.py lineas 209 a 219)
+
+start
+:Entrada: self;
+#C8E6C9:Linea 211: nodos = inorden(self.raiz)\nse crea la lista nodos con los nodos ordenados por clave\nver diagrama 10_inorden;
+if (Linea 212: nodos esta vacia ?) then (si)
+  :Linea 213: print que no hay estudiantes matriculados;
+  :Linea 214: return;
+  stop
+else (no)
+endif
+:Linea 215: print del encabezado\nCodigo, Nombre, Escuela y Promedio con anchos fijos;
+:Linea 216: print de una linea de 50 guiones;
+while (Linea 217: hay mas nodos en la lista ?) is (si)
+  #C8E6C9:Linea 218: e = nodo.valor\nse crea e como referencia al EstudianteUNAP del nodo;
+  :Linea 219: print de la fila\ncodigo, nombre, escuela y promedio con 2 decimales;
+endwhile (no)
+note right
+  El recorrido inorden entrega los codigos ya ordenados:
+  no hace falta ordenar aparte.
+  Costo O(n).
+end note
+#FFCDD2:Al terminar, la lista nodos y la variable e desaparecen\nlos nodos del arbol siguen intactos;
+stop
+
+legend bottom right
+  Verde: se crea un objeto o una variable
+  Rojo: se destruye un objeto o una variable
+  Nota amarilla: estado de la memoria o explicacion
+endlegend
+@enduml

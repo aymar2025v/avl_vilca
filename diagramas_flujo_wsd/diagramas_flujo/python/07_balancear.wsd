@@ -1,0 +1,54 @@
+@startuml 07_balancear
+skinparam shadowing false
+skinparam ActivityBackgroundColor #F4F7FB
+skinparam ActivityBorderColor #1F3A5F
+skinparam ArrowColor #1F3A5F
+skinparam NoteBackgroundColor #FFF8E1
+skinparam NoteBorderColor #C8553D
+skinparam ActivityDiamondBackgroundColor #FFF3E0
+skinparam ActivityDiamondBorderColor #1F3A5F
+skinparam PartitionBorderColor #1F3A5F
+skinparam ActivityStartColor #1F3A5F
+skinparam ActivityEndColor #1F3A5F
+
+title balancear(n) - reequilibra un nodo con los 4 casos (avl_python.py lineas 66 a 78)
+
+start
+:Entrada: n\nel Nodo que se revisa;
+:Linea 68: actualizar_altura(n)\nlas alturas de los hijos ya estan correctas;
+#C8E6C9:Linea 69: f = fb(n)\nse crea la variable local f\nver diagrama 03_fb;
+if (Linea 70: f mayor que 1 ?) then (si, pesado a la derecha)
+  if (Linea 71: fb del hijo derecho menor que 0 ?) then (si)
+    :Caso RL (derecha-izquierda)\nLinea 72: n.der = rotar_der(n.der)\nprimera rotacion: convierte RL en RR\nver diagrama 05_rotar_der;
+  else (no)
+    :Caso RR (derecha-derecha)\nno hace falta rotar el hijo;
+  endif
+  :Linea 73: return rotar_izq(n)\nsegunda rotacion (RL) o unica rotacion (RR)\nla nueva raiz del subarbol se devuelve al llamador\nver diagrama 06_rotar_izq;
+  stop
+else (no)
+endif
+if (Linea 74: f menor que -1 ?) then (si, pesado a la izquierda)
+  if (Linea 75: fb del hijo izquierdo mayor que 0 ?) then (si)
+    :Caso LR (izquierda-derecha)\nLinea 76: n.izq = rotar_izq(n.izq)\nprimera rotacion: convierte LR en LL\nver diagrama 06_rotar_izq;
+  else (no)
+    :Caso LL (izquierda-izquierda)\nno hace falta rotar el hijo;
+  endif
+  :Linea 77: return rotar_der(n)\nsegunda rotacion (LR) o unica rotacion (LL)\nver diagrama 05_rotar_der;
+  stop
+else (no)
+endif
+:Linea 78: return n\nel nodo ya cumple el invariante AVL\nse devuelve el mismo nodo;
+note right
+  RR y LL: 1 rotacion simple.
+  RL y LR: 2 rotaciones simples = 1 rotacion doble.
+  A diferencia de C++, aqui balancear DEVUELVE la raiz
+  del subarbol y insertar_avl la guarda en raiz.izq o raiz.der.
+end note
+stop
+
+legend bottom right
+  Verde: se crea un objeto o una variable
+  Rojo: se destruye un objeto o una variable
+  Nota amarilla: estado de la memoria o explicacion
+endlegend
+@enduml

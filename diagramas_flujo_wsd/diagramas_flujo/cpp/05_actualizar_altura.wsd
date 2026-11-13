@@ -1,0 +1,40 @@
+@startuml 05_actualizar_altura
+skinparam shadowing false
+skinparam ActivityBackgroundColor #F4F7FB
+skinparam ActivityBorderColor #1F3A5F
+skinparam ArrowColor #1F3A5F
+skinparam NoteBackgroundColor #FFF8E1
+skinparam NoteBorderColor #C8553D
+skinparam ActivityDiamondBackgroundColor #FFF3E0
+skinparam ActivityDiamondBorderColor #1F3A5F
+skinparam PartitionBorderColor #1F3A5F
+skinparam ActivityStartColor #1F3A5F
+skinparam ActivityEndColor #1F3A5F
+
+title actualizar_altura(n) - recalcula n->altura (avl.h lineas 51 a 53)
+
+start
+:Entrada: n\nreferencia a un unique_ptr de NodoBST\n(no constante: se modifica el nodo);
+if (n != nullptr ?) then (si)
+  :Primer valor: altura(n->izq)\nviene del campo altura del hijo izquierdo\no 0 si no tiene hijo;
+  :Segundo valor: altura(n->der)\nviene del campo altura del hijo derecho\no 0 si no tiene hijo;
+  :Mayor de los dos: std::max de ambos valores;
+  :n->altura = 1 + mayor\nel nodo cuenta como un nivel mas\nque su hijo mas alto;
+  note right
+    Ejemplo: hijo izquierdo con altura 2 y derecho con altura 1
+    n->altura = 1 + max(2, 1) = 3
+    Precondicion: los hijos ya tienen su altura correcta.
+    Por eso en las rotaciones se actualiza primero
+    el nodo que baja y despues el que sube.
+  end note
+else (no)
+  :No hace nada\nun puntero vacio no tiene campo altura;
+endif
+stop
+
+legend bottom right
+  Verde: se crea un objeto o una variable
+  Rojo: se destruye un objeto o una variable
+  Nota amarilla: estado de la memoria o explicacion
+endlegend
+@enduml

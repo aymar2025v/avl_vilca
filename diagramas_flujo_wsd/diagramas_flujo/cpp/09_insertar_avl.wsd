@@ -1,0 +1,61 @@
+@startuml 09_insertar_avl
+skinparam shadowing false
+skinparam ActivityBackgroundColor #F4F7FB
+skinparam ActivityBorderColor #1F3A5F
+skinparam ArrowColor #1F3A5F
+skinparam NoteBackgroundColor #FFF8E1
+skinparam NoteBorderColor #C8553D
+skinparam ActivityDiamondBackgroundColor #FFF3E0
+skinparam ActivityDiamondBorderColor #1F3A5F
+skinparam PartitionBorderColor #1F3A5F
+skinparam ActivityStartColor #1F3A5F
+skinparam ActivityEndColor #1F3A5F
+
+title insertar_avl(raiz, clave, valor) - insercion con reequilibrado (avl.h lineas 130 a 146)
+
+start
+:Entrada: raiz (referencia al enlace), clave y valor por valor;
+note right
+  raiz es una referencia al unique_ptr del padre
+  (o a la raiz del arbol) para poder reemplazar el subarbol.
+  Se crean copias locales de clave y valor en cada llamada.
+end note
+if (Linea 133: raiz == nullptr ?) then (si, se encontro el hueco)
+  #C8E6C9:Linea 134: raiz = std::make_unique de NodoBST\ncon std::move(clave) y std::move(valor)\nSE CREA UN OBJETO NodoBST nuevo\nver diagrama 01_NodoBST_constructor;
+  :Linea 135: return\nuna hoja nunca esta desbalanceada;
+  stop
+else (no, hay un nodo aqui)
+endif
+if (Linea 137: clave menor que raiz->clave ?) then (si)
+  :Linea 138: insertar_avl(raiz->izq, move(clave), move(valor))\nLLAMADA RECURSIVA por la izquierda;
+  note right
+    El arbol se recorre hacia abajo comparando.
+    Cada llamada espera a que la siguiente termine
+    y luego sigue en la linea 145.
+  end note
+elseif (Linea 139: clave mayor que raiz->clave ?) then (si)
+  :Linea 140: insertar_avl(raiz->der, move(clave), move(valor))\nLLAMADA RECURSIVA por la derecha;
+else (Linea 141: las claves son iguales)
+  :Linea 142: raiz->valor = std::move(valor)\nno se inserta nodo nuevo, solo se actualiza el valor;
+  :Linea 143: return\nla forma del arbol no cambio, no hay que balancear;
+  stop
+endif
+:Linea 145: balancear(raiz)\nse ejecuta al VOLVER de la recursion\ndesde el nodo mas profundo hasta la raiz\nver diagrama 08_balancear;
+note right
+  Ejemplo: insertar 30 en el arbol 10 -> 20
+  1. insertar_avl(10) baja a la derecha
+  2. insertar_avl(20) baja a la derecha
+  3. insertar_avl(nullptr) crea el nodo 30
+  4. vuelve a 20: balancear, fb = 1, no rota
+  5. vuelve a 10: balancear, fb = 2, caso RR,
+     rotar_izquierda y la nueva raiz es 20
+  En una insercion rota a lo sumo un nodo.
+end note
+stop
+
+legend bottom right
+  Verde: se crea un objeto o una variable
+  Rojo: se destruye un objeto o una variable
+  Nota amarilla: estado de la memoria o explicacion
+endlegend
+@enduml

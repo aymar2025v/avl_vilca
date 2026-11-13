@@ -1,0 +1,43 @@
+@startuml 18_es_avl
+skinparam shadowing false
+skinparam ArrowColor #1F4E79
+skinparam ActivityBorderColor #1F4E79
+skinparam ActivityBackgroundColor #EAF2FB
+skinparam ActivityDiamondBorderColor #BF9000
+skinparam ActivityDiamondBackgroundColor #FFF2CC
+skinparam NoteBackgroundColor #FFFBE6
+skinparam NoteBorderColor #BF9000
+skinparam ClassBackgroundColor #EAF2FB
+skinparam ClassBorderColor #1F4E79
+title es_avl(n, alt) - verifica alturas guardadas y |fb| <= 1
+
+start
+:Entrada: n (nodo), alt (int& de SALIDA: altura real calculada);
+if (n es nullptr ?) then (sí)
+  :alt = 0;
+  #D5F0D5:return true;
+  stop
+endif
+:int ai = 0, ad = 0;
+if (el subárbol izq NO es AVL  o  el subárbol der NO es AVL ?) then (sí)
+  #FADBD8:return false;
+  note right
+    ai y ad se llenan por referencia al llamar
+    es_avl(n->izq, ai) y es_avl(n->der, ad).
+    Con || si el izquierdo falla, el derecho no se evalúa.
+  end note
+  stop
+endif
+:alt = 1 + max(ai, ad);
+note right: altura REAL recalculada desde los hijos
+if (alt == n->altura  y  abs(ad - ai) <= 1 ?) then (sí)
+  #D5F0D5:return true;
+else (no)
+  #FADBD8:return false;
+  note right
+    false si la altura guardada en el nodo está mal
+    o si el nodo está desbalanceado (|fb| > 1).
+  end note
+endif
+stop
+@enduml

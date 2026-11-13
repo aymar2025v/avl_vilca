@@ -1,0 +1,51 @@
+@startuml 16_matricular
+skinparam shadowing false
+skinparam ActivityBackgroundColor #F4F7FB
+skinparam ActivityBorderColor #1F3A5F
+skinparam ArrowColor #1F3A5F
+skinparam NoteBackgroundColor #FFF8E1
+skinparam NoteBorderColor #C8553D
+skinparam ActivityDiamondBackgroundColor #FFF3E0
+skinparam ActivityDiamondBorderColor #1F3A5F
+skinparam PartitionBorderColor #1F3A5F
+skinparam ActivityStartColor #1F3A5F
+skinparam ActivityEndColor #1F3A5F
+
+title SIGA_AVL.matricular(est) - matricula un estudiante (avl_python.py lineas 188 a 198)
+
+start
+:Entrada: self y est (un EstudianteUNAP);
+#C8E6C9:Linea 189: t0 = perf_counter()\nse crea t0 con el instante inicial\nreloj de alta resolucion;
+#C8E6C9:Linea 190: existia = buscar(self.raiz, est.codigo) is not None\nse crea existia\nver diagrama 09_buscar;
+note right
+  Se busca primero para no contar dos veces
+  al mismo estudiante.
+end note
+:Linea 191: self.raiz = insertar_avl(self.raiz, est.codigo, est)\nla clave es el codigo y el valor es el objeto est\nver diagrama 08_insertar_avl;
+note right
+  Si el codigo es nuevo, se CREA un Nodo (diagrama 01_Nodo_init)
+  y el nodo guarda una referencia al mismo objeto est.
+  Si el codigo ya existia, solo se actualiza el valor del nodo.
+  La raiz devuelta reemplaza a self.raiz
+  porque las rotaciones pueden cambiar la raiz.
+end note
+if (Linea 192: existia es False ?) then (si, estudiante nuevo)
+  :Linea 193: self.total += 1\nse cuenta el nuevo estudiante;
+else (no, ya existia)
+  :No se cambia el total;
+endif
+#C8E6C9:Linea 194: t1 = perf_counter()\nse crea t1 con el instante final;
+if (Linea 195: existia es True ?) then (si)
+  :Linea 196: print de que el codigo ya existia\ny los datos fueron actualizados\ncon el tiempo (t1 - t0) por 1e6 en microsegundos;
+else (no)
+  :Linea 198: print Matriculado nombre en tiempo us\ncon el tiempo (t1 - t0) por 1e6 en microsegundos;
+endif
+#FFCDD2:Al terminar, las variables locales t0, t1 y existia desaparecen\nel estudiante y el nodo siguen vivos en el arbol;
+stop
+
+legend bottom right
+  Verde: se crea un objeto o una variable
+  Rojo: se destruye un objeto o una variable
+  Nota amarilla: estado de la memoria o explicacion
+endlegend
+@enduml

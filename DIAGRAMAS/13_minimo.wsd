@@ -1,0 +1,28 @@
+@startuml 13_minimo
+skinparam shadowing false
+skinparam ArrowColor #1F4E79
+skinparam ActivityBorderColor #1F4E79
+skinparam ActivityBackgroundColor #EAF2FB
+skinparam ActivityDiamondBorderColor #BF9000
+skinparam ActivityDiamondBackgroundColor #FFF2CC
+skinparam NoteBackgroundColor #FFFBE6
+skinparam NoteBorderColor #BF9000
+skinparam ClassBackgroundColor #EAF2FB
+skinparam ClassBorderColor #1F4E79
+title minimo(n) - nodo con la clave más pequeña de un subárbol
+
+start
+:Entrada: n (const unique_ptr&)\nPrecondición: n no es nullptr;
+if (n->izq existe ?) then (sí)
+  #FFF0B3:return minimo(n->izq);
+  note right: el menor siempre está más a la izquierda
+else (no)
+  #D5F0D5:return n.get();
+  note right: no hay más a la izquierda: este nodo es el mínimo
+endif
+note right
+  En eliminar_avl se llama con raiz->der,
+  que existe seguro (caso de dos hijos).
+end note
+stop
+@enduml

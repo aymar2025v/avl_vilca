@@ -1,0 +1,57 @@
+@startuml 08_rotar_izquierda
+skinparam shadowing false
+skinparam ArrowColor #1F4E79
+skinparam ActivityBorderColor #1F4E79
+skinparam ActivityBackgroundColor #EAF2FB
+skinparam ActivityDiamondBorderColor #BF9000
+skinparam ActivityDiamondBackgroundColor #FFF2CC
+skinparam NoteBackgroundColor #FFFBE6
+skinparam NoteBorderColor #BF9000
+skinparam ClassBackgroundColor #EAF2FB
+skinparam ClassBorderColor #1F4E79
+title rotar_izquierda(z) - corrige el caso RR (espejo de rotar_derecha)
+
+start
+:Entrada: z = referencia al unique_ptr que apunta al nodo desbalanceado\nPrecondición: z->der no es nullptr;
+note right
+  Estado inicial:
+  <code>
+       z
+      / \
+     T1  y
+        / \
+       T2  x
+  </code>
+end note
+:auto y = std::move(z->der);
+note right
+  y toma la propiedad del hijo derecho.
+  z->der queda en nullptr.
+end note
+:z->der = std::move(y->izq);
+note right
+  El subárbol T2 (hijo izquierdo de y)
+  pasa a ser hijo derecho de z.
+  y->izq queda en nullptr.
+end note
+#FADBD8:actualizar_altura(z);
+note right: primero z (quedó más abajo), porque y depende de él
+:y->izq = std::move(z);
+note right: z pasa a ser hijo izquierdo de y
+:z = std::move(y);
+note right: la referencia (hueco del padre) ahora apunta a y
+#FADBD8:actualizar_altura(z);
+note right: se actualiza la nueva raíz del subárbol
+:++contador_rotaciones;
+note right
+  Estado final:
+  <code>
+         y
+       /   \
+      z     x
+     / \
+    T1  T2
+  </code>
+end note
+stop
+@enduml

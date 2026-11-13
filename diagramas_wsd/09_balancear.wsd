@@ -1,0 +1,87 @@
+@startuml 09_balancear
+' ---------- Estilo técnico formal (esquinas rectas) ----------
+skinparam shadowing false
+skinparam roundCorner 0
+skinparam ActivityRoundCorner 0
+skinparam defaultFontName Arial
+skinparam ActivityFontName Consolas
+skinparam ActivityFontSize 12
+skinparam NoteFontSize 11
+skinparam ArrowColor #000000
+skinparam ArrowThickness 1
+skinparam ActivityBorderColor #000000
+skinparam ActivityBorderThickness 1.2
+skinparam ActivityBackgroundColor #F2F2F2
+skinparam ActivityDiamondBorderColor #000000
+skinparam ActivityDiamondBackgroundColor #FFFFFF
+skinparam ActivityStartColor #000000
+skinparam ActivityEndColor #000000
+skinparam NoteBackgroundColor #FFFFFF
+skinparam NoteBorderColor #595959
+skinparam NoteBorderThickness 1
+skinparam PartitionBorderColor #595959
+skinparam PartitionBackgroundColor #FFFFFF
+skinparam TitleFontSize 16
+skinparam TitleBorderThickness 1.5
+skinparam TitleBorderColor #000000
+skinparam TitleBorderRoundCorner 0
+skinparam LegendBackgroundColor #FFFFFF
+skinparam LegendBorderColor #000000
+skinparam LegendBorderThickness 1
+skinparam LegendBorderRoundCorner 0
+skinparam ClassBackgroundColor #FFFFFF
+skinparam ClassBorderColor #000000
+skinparam ClassAttributeIconSize 0
+skinparam PackageStyle rectangle
+skinparam PackageBorderColor #595959
+skinparam ComponentBackgroundColor #F2F2F2
+skinparam ComponentBorderColor #000000
+skinparam SequenceParticipantBackgroundColor #F2F2F2
+skinparam SequenceParticipantBorderColor #000000
+skinparam SequenceLifeLineBorderColor #595959
+skinparam SequenceGroupBackgroundColor #FFFFFF
+skinparam SequenceDividerBackgroundColor #D9D9D9
+skinparam FooterFontSize 9
+footer SIS210 - Algoritmos y Estructuras de Datos  ·  UNAP 2026-II  ·  Semana 10: Árbol AVL  ·  Fuente: avl.h, líneas 120-137
+title balancear(n): reequilibrio local (casos LL, RR, LR y RL)
+
+legend top
+  |= Campo |= Detalle |
+  | Entrada | n: unique_ptr<NodoBST>& (no nulo) cuyos hijos ya son AVL |
+  | Precondición | abs(fb) de los hijos <= 1 y abs(fb(n)) <= 2 |
+  | Postcondición | El subárbol con raíz en n cumple abs(fb) <= 1 y tiene alturas correctas |
+  | Complejidad | O(1): como máximo 2 rotaciones |
+endlegend
+
+start
+:Entrada: n (referencia al unique_ptr del nodo)<
+#DDEBF7:[1] actualizar_altura(n);
+note right: Deja correcta la altura del nodo actual.
+#DDEBF7:[2] int fb = factor_balance(n);
+if ([3] fb > 1 ?) then (sí: pesado a la DERECHA)
+  if ([3a] fb del hijo derecho < 0 ?) then (sí: caso RL)
+    #FCE4D6:[3b] rotar_derecha(n->der);
+    note right: RL, paso 1: se endereza el hijo derecho (queda como caso RR).
+  else (no: caso RR)
+    :[3c] Basta una rotación simple;
+  endif
+  #FCE4D6:[3d] rotar_izquierda(n);
+  note right: Caso RR, o paso 2 del caso RL.
+elseif ([4] fb < -1 ?) then (sí: pesado a la IZQUIERDA)
+  if ([4a] fb del hijo izquierdo > 0 ?) then (sí: caso LR)
+    #FCE4D6:[4b] rotar_izquierda(n->izq);
+    note right: LR, paso 1: se endereza el hijo izquierdo (queda como caso LL).
+  else (no: caso LL)
+    :[4c] Basta una rotación simple;
+  endif
+  #FCE4D6:[4d] rotar_derecha(n);
+  note right: Caso LL, o paso 2 del caso LR.
+else ([5] fb en -1, 0 o 1)
+  :[5a] Nodo equilibrado: no se hace nada;
+endif
+note right
+  Se usa "< 0" y "> 0" porque en la ELIMINACIÓN el hijo puede tener fb = 0:
+  en ese caso se aplica la rotación simple, que es la correcta.
+end note
+stop
+@enduml

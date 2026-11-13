@@ -1,0 +1,91 @@
+@startuml 25_test_P5_eliminar_raiz_dos_hijos
+' ---------- Estilo técnico formal (esquinas rectas) ----------
+skinparam shadowing false
+skinparam roundCorner 0
+skinparam ActivityRoundCorner 0
+skinparam defaultFontName Arial
+skinparam ActivityFontName Consolas
+skinparam ActivityFontSize 12
+skinparam NoteFontSize 11
+skinparam ArrowColor #000000
+skinparam ArrowThickness 1
+skinparam ActivityBorderColor #000000
+skinparam ActivityBorderThickness 1.2
+skinparam ActivityBackgroundColor #F2F2F2
+skinparam ActivityDiamondBorderColor #000000
+skinparam ActivityDiamondBackgroundColor #FFFFFF
+skinparam ActivityStartColor #000000
+skinparam ActivityEndColor #000000
+skinparam NoteBackgroundColor #FFFFFF
+skinparam NoteBorderColor #595959
+skinparam NoteBorderThickness 1
+skinparam PartitionBorderColor #595959
+skinparam PartitionBackgroundColor #FFFFFF
+skinparam TitleFontSize 16
+skinparam TitleBorderThickness 1.5
+skinparam TitleBorderColor #000000
+skinparam TitleBorderRoundCorner 0
+skinparam LegendBackgroundColor #FFFFFF
+skinparam LegendBorderColor #000000
+skinparam LegendBorderThickness 1
+skinparam LegendBorderRoundCorner 0
+skinparam ClassBackgroundColor #FFFFFF
+skinparam ClassBorderColor #000000
+skinparam ClassAttributeIconSize 0
+skinparam PackageStyle rectangle
+skinparam PackageBorderColor #595959
+skinparam ComponentBackgroundColor #F2F2F2
+skinparam ComponentBorderColor #000000
+skinparam SequenceParticipantBackgroundColor #F2F2F2
+skinparam SequenceParticipantBorderColor #000000
+skinparam SequenceLifeLineBorderColor #595959
+skinparam SequenceGroupBackgroundColor #FFFFFF
+skinparam SequenceDividerBackgroundColor #D9D9D9
+skinparam FooterFontSize 9
+footer SIS210 - Algoritmos y Estructuras de Datos  ·  UNAP 2026-II  ·  Semana 10: Árbol AVL  ·  Fuente: avl_main.cpp, líneas 126-138
+title test_P5_eliminar_raiz_dos_hijos(): eliminar la raíz con 2 hijos
+
+legend top
+  |= Campo |= Detalle |
+  | Objetivo | Verificar el caso 3 de eliminación (sucesor inorden) |
+  | Resultado esperado | La raíz pasa de 20 a 25 y h <= 3 |
+endlegend
+
+start
+partition "Preparación" {
+  :[1] r = nullptr;
+  #DDEBF7:[2] insertar_avl para 20, 10, 30, 25 y 35;
+  note right
+    <code>
+          20
+         /  \
+       10    30
+            /  \
+          25    35
+    </code>
+  end note
+  :[3] int raiz_orig = r->clave;
+  note right: Guarda la raíz original (20) para imprimirla después.
+}
+partition "Operación" {
+  #FCE4D6:[4] eliminar_avl(r, 20);
+  note right
+    Caso 3: el sucesor inorden es el mínimo del subárbol derecho (25).
+    Se copia 25 a la raíz y se elimina el 25 original.
+    <code>
+          25
+         /  \
+       10    30
+               \
+                35
+    </code>
+  end note
+}
+partition "Verificación" {
+  #E4DFEC:[5] assert(buscar(r, 20) es nullptr);
+  #E4DFEC:[6] assert(h(r) <= 3);
+  :[7] std::cout << "[P5 OK] (raiz " << raiz_orig << " -> " << r->clave << ")">
+  #DDEBF7:[8] imprimir_arbol(r);
+}
+stop
+@enduml

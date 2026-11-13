@@ -1,0 +1,54 @@
+@startuml 11_traza_insertar_10_20_30
+skinparam shadowing false
+skinparam ArrowColor #1F4E79
+skinparam ActivityBorderColor #1F4E79
+skinparam ActivityBackgroundColor #EAF2FB
+skinparam ActivityDiamondBorderColor #BF9000
+skinparam ActivityDiamondBackgroundColor #FFF2CC
+skinparam NoteBackgroundColor #FFFBE6
+skinparam NoteBorderColor #BF9000
+skinparam ClassBackgroundColor #EAF2FB
+skinparam ClassBorderColor #1F4E79
+title Traza de pila: insertar 30 en el árbol 10 -> 20 (caso RR)
+autonumber
+participant main
+participant "insertar_avl\n(raiz = 10)" as I1
+participant "insertar_avl\n(raiz = 20)" as I2
+participant "insertar_avl\n(raiz = nullptr)" as I3
+participant balancear as B
+participant rotar_izquierda as R
+
+note over main
+  Antes: 10 tiene hijo derecho 20 (sin balancear aún el 30)
+end note
+main -> I1: insertar_avl(r, 30)
+activate I1
+I1 -> I2: 30 > 10 : insertar_avl(raiz->der, 30)
+activate I2
+I2 -> I3: 30 > 20 : insertar_avl(raiz->der, 30)
+activate I3
+I3 -> I3: raiz == nullptr -> make_unique(30)
+I3 --> I2: return (hoja, no se balancea)
+deactivate I3
+I2 -> B: balancear(nodo 20)
+activate B
+B --> I2: altura 2, fb = +1 -> equilibrado, sin rotación
+deactivate B
+I2 --> I1: return
+deactivate I2
+I1 -> B: balancear(nodo 10)
+activate B
+B -> B: actualizar_altura -> h = 3
+B -> B: fb = 2 - 0 = +2  (fb > 1)
+B -> B: fb del hijo der (20) = +1, no es < 0 -> caso RR
+B -> R: rotar_izquierda(n)
+activate R
+R -> R: y = 20, T2 = nullptr pasa a 10->der
+R -> R: 10 queda como hijo izquierdo de 20, n apunta a 20
+R --> B: ++contador_rotaciones (= 1)
+deactivate R
+B --> I1: subárbol equilibrado
+deactivate B
+I1 --> main: raíz 20 con hijos 10 y 30 (h = 2)
+deactivate I1
+@enduml
